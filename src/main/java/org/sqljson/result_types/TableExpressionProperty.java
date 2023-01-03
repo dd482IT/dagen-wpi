@@ -8,14 +8,14 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 public class TableExpressionProperty
 {
    private final String name;
-   private final @Nullable String tableExpression;
-   private final @Nullable String specifiedSourceCodeFieldType;
+   private final String tableExpression;
+   private final String specifiedSourceCodeFieldType;
 
    public TableExpressionProperty
       (
          String name,
-         @Nullable String tableExpression,
-         @Nullable String specifiedSourceCodeFieldType
+         String tableExpression,
+         String specifiedSourceCodeFieldType
       )
    {
       this.name = name;
@@ -25,12 +25,12 @@ public class TableExpressionProperty
 
    public String getName() { return name; }
 
-   public @Nullable String getTableExpression() { return tableExpression; }
+   public String getTableExpression() { return tableExpression; }
 
-   public @Nullable String getSpecifiedSourceCodeFieldType() { return specifiedSourceCodeFieldType; }
+   public String getSpecifiedSourceCodeFieldType() { return specifiedSourceCodeFieldType; }
 
    @Override
-   public boolean equals(@Nullable Object o)
+   public boolean equals(Object o)
    {
       if (this == o) return true;
       if (o == null || getClass() != o.getClass()) return false;

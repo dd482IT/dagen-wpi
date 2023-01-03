@@ -19,14 +19,14 @@ import static org.sqljson.util.StringFuns.upperCamelCase;
 
 public class TypeScriptWriter implements SourceCodeWriter
 {
-   private final @Nullable Path srcOutputDir;
-   private final @Nullable String filesHeader;
+   private final Path srcOutputDir;
+   private final String filesHeader;
    private final String sqlResourceNamePrefix;
 
    public TypeScriptWriter
       (
-         @Nullable Path srcOutputDir,
-         @Nullable String filesHeader,
+         Path srcOutputDir,
+         String filesHeader,
          String sqlResourceNamePrefix
       )
    {
@@ -42,14 +42,14 @@ public class TypeScriptWriter implements SourceCodeWriter
          List<ResultType> resultTypes,
          List<String> paramNames,
          List<QueryReprSqlPath> sqlPaths,
-         @Nullable String queryFileHeader,
+         String queryFileHeader,
          boolean includeTimestamp
       )
       throws IOException
    {
       String moduleName = makeModuleName(queryName);
 
-      @Nullable Path outputPath = getOutputFilePath(moduleName);
+      Path outputPath = getOutputFilePath(moduleName);
 
       BufferedWriter bw = IO.newFileOrStdoutWriter(outputPath);
 
@@ -87,7 +87,7 @@ public class TypeScriptWriter implements SourceCodeWriter
    private void writeQueryModuleFileHeaders
       (
          BufferedWriter bw,
-         @Nullable String queryFileHeader
+         String queryFileHeader
       )
       throws IOException
    {
@@ -213,7 +213,7 @@ public class TypeScriptWriter implements SourceCodeWriter
    {
       boolean notNull = !valueOr(f.getNullable(), true);
 
-      @Nullable String typeOverride = f.getSpecifiedSourceCodeFieldType();
+      String typeOverride = f.getSpecifiedSourceCodeFieldType();
       if ( typeOverride != null )
          return typeOverride;
 
@@ -292,7 +292,7 @@ public class TypeScriptWriter implements SourceCodeWriter
           new RuntimeException("Unhandled field category when unwrapping " + genType.getTypeName() + ".");
    }
 
-   private @Nullable Path getOutputFilePath(String moduleName)
+   private Path getOutputFilePath(String moduleName)
    {
       return applyIfPresent(srcOutputDir, d -> d.resolve(moduleName + ".ts"));
    }

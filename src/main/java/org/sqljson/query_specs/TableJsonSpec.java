@@ -15,13 +15,13 @@ public final class TableJsonSpec
 {
    private final String table; // possibly qualified
 
-   private final @Nullable List<TableFieldExpr> fieldExpressions;
+   private final List<TableFieldExpr> fieldExpressions;
 
-   private final @Nullable List<ParentSpec> parentTables;
+   private final List<ParentSpec> parentTables;
 
-   private final @Nullable List<ChildCollectionSpec> childTableCollections;
+   private final List<ChildCollectionSpec> childTableCollections;
 
-   private @Nullable RecordCondition recordCondition = null;
+   private RecordCondition recordCondition = null;
 
    TableJsonSpec()
    {
@@ -31,10 +31,10 @@ public final class TableJsonSpec
    public TableJsonSpec
       (
          String table,
-         @Nullable List<TableFieldExpr> fieldExpressions,
-         @Nullable List<ParentSpec> parentTables,
-         @Nullable List<ChildCollectionSpec> childTableCollections,
-         @Nullable RecordCondition recordCondition
+         List<TableFieldExpr> fieldExpressions,
+         List<ParentSpec> parentTables,
+         List<ChildCollectionSpec> childTableCollections,
+         RecordCondition recordCondition
       )
    {
       requireNonNull(table);
@@ -50,31 +50,28 @@ public final class TableJsonSpec
    public String getTable() { return table; }
 
    /// The output fields which originate from fields of this table.
-   public @Nullable List<TableFieldExpr> getFieldExpressions() { return fieldExpressions; }
+   public List<TableFieldExpr> getFieldExpressions() { return fieldExpressions; }
 
-   public @Nullable List<ParentSpec> getParentTables() { return parentTables; }
+   public List<ParentSpec> getParentTables() { return parentTables; }
 
-   public @Nullable List<ChildCollectionSpec> getChildTableCollections()
+   public List<ChildCollectionSpec> getChildTableCollections()
    {
       return childTableCollections;
    }
 
-   public @Nullable RecordCondition getRecordCondition() { return recordCondition; }
+   public RecordCondition getRecordCondition() { return recordCondition; }
 
 
-   @JsonIgnore
    public List<TableFieldExpr> getFieldExpressionsList()
    {
       return fieldExpressions != null ? fieldExpressions : emptyList();
    }
 
-   @JsonIgnore
    public List<ParentSpec> getParentTablesList()
    {
       return parentTables != null ? parentTables : emptyList();
    }
 
-   @JsonIgnore
    public List<ParentSpec> getReferencedParentTablesList()
    {
       return parentTables != null ?
@@ -82,7 +79,6 @@ public final class TableJsonSpec
          : emptyList();
    }
 
-   @JsonIgnore
    public List<ParentSpec> getInlineParentTablesList()
    {
       return parentTables != null ?
@@ -90,19 +86,16 @@ public final class TableJsonSpec
          : emptyList();
    }
 
-   @JsonIgnore
    public List<ChildCollectionSpec> getChildTableCollectionsList()
    {
       return childTableCollections != null ? childTableCollections : emptyList();
    }
 
-   @JsonIgnore
    public boolean hasCondition()
    {
       return recordCondition != null;
    }
 
-   @JsonIgnore
    public int getJsonPropertiesCount()
    {
        return

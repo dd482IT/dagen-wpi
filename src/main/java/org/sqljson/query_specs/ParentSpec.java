@@ -14,9 +14,9 @@ import static org.sqljson.util.Nullables.applyIfPresent;
 public final class ParentSpec
 {
    private final TableJsonSpec tableJson;
-   private final @Nullable String referenceName;
-   private final @Nullable List<String> viaForeignKeyFields;
-   private final @Nullable CustomJoinCondition customJoinCondition;
+   private final String referenceName;
+   private final List<String> viaForeignKeyFields;
+   private final CustomJoinCondition customJoinCondition;
 
    private ParentSpec()
    {
@@ -26,8 +26,8 @@ public final class ParentSpec
    public ParentSpec
       (
          TableJsonSpec tableJson,
-         @Nullable String referenceName,
-         @Nullable List<String> viaForeignKeyFields
+         String referenceName,
+         List<String> viaForeignKeyFields
       )
    {
       this(tableJson, referenceName, viaForeignKeyFields, null);
@@ -36,9 +36,9 @@ public final class ParentSpec
    public ParentSpec
       (
          TableJsonSpec tableJson,
-         @Nullable String referenceName,
-         @Nullable List<String> viaForeignKeyFields,
-         @Nullable CustomJoinCondition customJoinCondition
+         String referenceName,
+         List<String> viaForeignKeyFields,
+         CustomJoinCondition customJoinCondition
       )
    {
       this.tableJson = tableJson;
@@ -48,16 +48,14 @@ public final class ParentSpec
    }
    public TableJsonSpec getTableJson() { return getParentTableJsonSpec(); }
 
-   public @Nullable String getReferenceName() { return referenceName; }
+   public String getReferenceName() { return referenceName; }
 
-   public @Nullable List<String> getViaForeignKeyFields() { return viaForeignKeyFields; }
+   public List<String> getViaForeignKeyFields() { return viaForeignKeyFields; }
 
-   public @Nullable CustomJoinCondition getCustomJoinCondition() { return customJoinCondition; }
+   public CustomJoinCondition getCustomJoinCondition() { return customJoinCondition; }
 
-   @JsonIgnore
    public TableJsonSpec getParentTableJsonSpec() { return tableJson; }
 
-   @JsonIgnore
-   public @Nullable Set<String> getChildForeignKeyFieldsSet() { return applyIfPresent(viaForeignKeyFields, HashSet::new); }
+   public Set<String> getChildForeignKeyFieldsSet() { return applyIfPresent(viaForeignKeyFields, HashSet::new); }
 }
 

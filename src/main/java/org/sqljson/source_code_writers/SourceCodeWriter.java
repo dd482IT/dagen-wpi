@@ -16,7 +16,7 @@ public interface SourceCodeWriter
          List<ResultType> resultTypes,
          List<String> paramNames,
          List<QueryReprSqlPath> sqlPaths,
-         @Nullable String queryFileHeader,
+         String queryFileHeader,
          boolean includeTimestamp
       )
       throws IOException;

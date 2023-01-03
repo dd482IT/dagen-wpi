@@ -13,7 +13,6 @@ public enum PropertyNameDefault
    AS_IN_DB,
    CAMELCASE;
 
-   @JsonIgnore
    public Function<String,String> toFunctionOfFieldName()
    {
       switch ( this )

@@ -39,7 +39,7 @@ public class PostgresDialect implements SqlDialect
    public String getAggregatedRowObjectsExpression
       (
          List<String> columnNames,
-         @Nullable String orderBy,
+         String orderBy,
          String fromAlias
       )
    {
@@ -55,7 +55,7 @@ public class PostgresDialect implements SqlDialect
    public String getAggregatedColumnValuesExpression
       (
           String columnName,
-          @Nullable String orderBy,
+          String orderBy,
           String fromAlias
       )
    {

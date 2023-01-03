@@ -13,11 +13,11 @@ public final class ChildCollectionSpec
 {
    private final String collectionName;
    private final TableJsonSpec tableJson;
-   private final @Nullable List<String> foreignKeyFields;
-   private final @Nullable CustomJoinCondition customJoinCondition;
-   private final @Nullable String filter;
-   private final @Nullable Boolean unwrap;
-   private final @Nullable String orderBy;
+   private final List<String> foreignKeyFields;
+   private final CustomJoinCondition customJoinCondition;
+   private final String filter;
+   private final Boolean unwrap;
+   private final String orderBy;
 
    private ChildCollectionSpec()
    {
@@ -34,10 +34,10 @@ public final class ChildCollectionSpec
       (
          String collectionName,
          TableJsonSpec tableJson,
-         @Nullable List<String> fkFields,
-         @Nullable String filter,
-         @Nullable Boolean unwrap,
-         @Nullable String orderBy
+         List<String> fkFields,
+         String filter,
+         Boolean unwrap,
+         String orderBy
       )
    {
       this.collectionName = collectionName;
@@ -54,9 +54,9 @@ public final class ChildCollectionSpec
          String collectionName,
          TableJsonSpec tableJson,
          CustomJoinCondition customJoinCondition,
-         @Nullable String filter,
-         @Nullable Boolean unwrap,
-         @Nullable String orderBy
+         String filter,
+         Boolean unwrap,
+         String orderBy
       )
    {
       this.collectionName = collectionName;
@@ -72,19 +72,18 @@ public final class ChildCollectionSpec
 
    public TableJsonSpec getTableJson() { return tableJson; }
 
-   public @Nullable List<String> getForeignKeyFields() { return foreignKeyFields; }
+   public List<String> getForeignKeyFields() { return foreignKeyFields; }
 
-   public @Nullable CustomJoinCondition getCustomJoinCondition() { return customJoinCondition; }
+   public CustomJoinCondition getCustomJoinCondition() { return customJoinCondition; }
 
-   @JsonIgnore
-   public @Nullable Set<String> getForeignKeyFieldsSet()
+   public Set<String> getForeignKeyFieldsSet()
    {
       return applyIfPresent(foreignKeyFields, HashSet::new);
    }
 
-   public @Nullable String getFilter() { return filter; }
+   public String getFilter() { return filter; }
 
-   public @Nullable Boolean getUnwrap() { return unwrap; }
+   public Boolean getUnwrap() { return unwrap; }
 
-   public @Nullable String getOrderBy() { return orderBy; }
+   public String getOrderBy() { return orderBy; }
 }

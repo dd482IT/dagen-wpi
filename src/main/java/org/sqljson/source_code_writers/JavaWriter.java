@@ -21,9 +21,9 @@ import static org.sqljson.util.StringFuns.*;
 public class JavaWriter implements SourceCodeWriter
 {
    private final String targetPackage;
-   private final @Nullable Path packageOutputDir;
+   private final Path packageOutputDir;
    private final NullableFieldRepr nullableFieldRepr;
-   private final @Nullable String filesHeader;
+   private final String filesHeader;
    private final String sqlResourceNamePrefix;
    private final boolean generateGetters;
    private final boolean generateSetters;
@@ -34,10 +34,10 @@ public class JavaWriter implements SourceCodeWriter
    public JavaWriter
       (
          String targetPackage,
-         @Nullable Path srcOutputBaseDir,
+         Path srcOutputBaseDir,
          NullableFieldRepr nullableFieldRepr,
-         @Nullable String filesHeader,
-         @Nullable String sqlResourceNamePrefix,
+         String filesHeader,
+         String sqlResourceNamePrefix,
          boolean generateGetters,
          boolean generateSetters
       )
@@ -61,14 +61,14 @@ public class JavaWriter implements SourceCodeWriter
          List<ResultType> resultTypes,
          List<String> paramNames,
          List<QueryReprSqlPath> sqlPaths,
-         @Nullable String queryFileHeader,
+         String queryFileHeader,
          boolean includeTimestamp
       )
       throws IOException
    {
       String queryClassName = upperCamelCase(queryName);
 
-      @Nullable Path outputPath = getOutputFilePath(queryClassName);
+      Path outputPath = getOutputFilePath(queryClassName);
 
       BufferedWriter bw = newFileOrStdoutWriter(outputPath);
 
@@ -92,7 +92,7 @@ public class JavaWriter implements SourceCodeWriter
    private void writeQueryFileImportsAndHeaders
       (
          BufferedWriter bw,
-         @Nullable String queryFileHeader
+         String queryFileHeader
       )
       throws IOException
    {
@@ -216,7 +216,7 @@ public class JavaWriter implements SourceCodeWriter
       }
    }
 
-   private @Nullable Path getOutputFilePath(String className)
+   private Path getOutputFilePath(String className)
    {
       return applyIfPresent(packageOutputDir, d -> d.resolve(className + ".java"));
    }
@@ -316,7 +316,7 @@ public class JavaWriter implements SourceCodeWriter
    {
       boolean notNull = !valueOr(f.getNullable(), true);
 
-      @Nullable String typeDecl = f.getSpecifiedSourceCodeFieldType();
+      String typeDecl = f.getSpecifiedSourceCodeFieldType();
       if ( typeDecl != null )
          return typeDecl;
 

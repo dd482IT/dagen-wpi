@@ -12,7 +12,7 @@ import static org.sqljson.query_specs.PropertyNameDefault.CAMELCASE;
 
 public final class QueryGroupSpec
 {
-   private @Nullable String defaultSchema = null;
+   private String defaultSchema = null;
    private PropertyNameDefault propertyNameDefault = CAMELCASE;
    private List<String> generateUnqualifiedNamesForSchemas = emptyList();
    private List<QuerySpec> querySpecs = emptyList();
@@ -21,7 +21,7 @@ public final class QueryGroupSpec
 
    public QueryGroupSpec
       (
-         @Nullable String defaultSchema,
+         String defaultSchema,
          PropertyNameDefault propertyNameDefault,
          List<String> generateUnqualifiedNamesForSchemas,
          List<QuerySpec> querySpecs
@@ -33,7 +33,7 @@ public final class QueryGroupSpec
       this.querySpecs = unmodifiableList(new ArrayList<>(querySpecs));
    }
 
-   public @Nullable String getDefaultSchema() { return defaultSchema; }
+   public String getDefaultSchema() { return defaultSchema; }
 
    public PropertyNameDefault getPropertyNameDefault() { return propertyNameDefault; }
 

@@ -71,7 +71,7 @@ public class DatabaseMetadataGeneratorMain
       int argIx = 0;
 
       String jdbcPropsFilePath = args[argIx++];
-      @Nullable String dbmdPropsFilePath = args.length == 3 ? args[argIx++] : null;
+      String dbmdPropsFilePath = args.length == 3 ? args[argIx++] : null;
       String outputFilePath = args[argIx];
 
       Properties props = new Properties();
@@ -99,16 +99,16 @@ public class DatabaseMetadataGeneratorMain
                catch (IOException ioe) { throw new RuntimeException(ioe); }
             });
 
-            @Nullable String dateMappingStr = getProperty(props, "date-mapping");
+            String dateMappingStr = getProperty(props, "date-mapping");
             var dateMapping =
                dateMappingStr != null ? DatabaseMetadataFetcher.DateMapping.valueOf(dateMappingStr)
                   : DatabaseMetadataFetcher.DateMapping.DATES_AS_DRIVER_REPORTED;
 
-            @Nullable String relsOwner = getProperty(props, "schema", "relations-owner");
+            String relsOwner = getProperty(props, "schema", "relations-owner");
             if ( Objects.equals(relsOwner, "*any-owners*") )
                relsOwner = null;
 
-            @Nullable Pattern excludeRelsPat =
+            Pattern excludeRelsPat =
                 applyIfPresent(getProperty(props, "exclude-relations-fqname-regex"), Pattern::compile);
 
             DatabaseMetadata dbmd =

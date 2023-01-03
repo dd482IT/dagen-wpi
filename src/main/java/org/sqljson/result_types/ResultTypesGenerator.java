@@ -18,13 +18,13 @@ import static org.sqljson.util.Nullables.*;
 public class ResultTypesGenerator
 {
    private final DatabaseMetadata dbmd;
-   private final @Nullable String defaultSchema;
+   private final String defaultSchema;
    private final Function<String,String> defaultPropertyNameFn;
 
    public ResultTypesGenerator
       (
          DatabaseMetadata dbmd,
-         @Nullable String defaultSchema,
+         String defaultSchema,
          Function<String,String> defaultPropertyNameFn
       )
    {
@@ -90,7 +90,7 @@ public class ResultTypesGenerator
          // except for any additions to the name to make it unique. Note: Only the original
          // scope (prior to this type building) is searched because the additions made here
          // to typesInScope are proper parts of the type and so not identical to the whole type.
-         @Nullable ResultType existingIdenticalType = findTypeIgnoringNameExtensions(bnResType, envTypesInScope);
+         ResultType existingIdenticalType = findTypeIgnoringNameExtensions(bnResType, envTypesInScope);
          if ( existingIdenticalType != null ) // Identical previously generated type found, use it as top type.
             resultTypes.add(0, existingIdenticalType);
          else // This type does not match any previously generated, but needs a new name.
@@ -263,7 +263,7 @@ public class ResultTypesGenerator
       return relMd.getFields().stream().collect(toMap(Field::getName, identity()));
    }
 
-   private @Nullable ResultType findTypeIgnoringNameExtensions
+   private ResultType findTypeIgnoringNameExtensions
       (
          ResultType typeToFind,
          Map<String, ResultType> inMap
@@ -288,7 +288,7 @@ public class ResultTypesGenerator
    private boolean someFkFieldKnownNotNullable(ParentSpec parentSpec, RelId childRelId)
    {
       RelId parentRelId = dbmd.toRelId(parentSpec.getParentTableJsonSpec().getTable(), defaultSchema);
-      @Nullable Set<String> specFkFields = parentSpec.getChildForeignKeyFieldsSet();
+      Set<String> specFkFields = parentSpec.getChildForeignKeyFieldsSet();
       ForeignKey fk = valueOrThrow(dbmd.getForeignKeyFromTo(childRelId, parentRelId, specFkFields, ForeignKeyScope.REGISTERED_TABLES_ONLY), () ->
          new RuntimeException("foreign key to parent not found")
       );

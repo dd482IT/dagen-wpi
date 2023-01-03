@@ -21,11 +21,11 @@ import static org.sqljson.util.StringFuns.indentLines;
 
 public class TypeScriptWriter implements SourceCodeWriter
 {
-   private final @Nullable Path srcOutputDir;
+   private final Path srcOutputDir;
 
    public TypeScriptWriter
       (
-         @Nullable Path srcOutputDir
+         Path srcOutputDir
       )
    {
       this.srcOutputDir = srcOutputDir;
@@ -53,7 +53,7 @@ public class TypeScriptWriter implements SourceCodeWriter
       )
       throws IOException
    {
-      @Nullable Path outputPath = getOutputFilePath();
+      Path outputPath = getOutputFilePath();
 
       BufferedWriter bw = newFileOrStdoutWriter(outputPath);
 
@@ -117,7 +117,7 @@ public class TypeScriptWriter implements SourceCodeWriter
          sw.write("\"null\": ");
          sw.write(f.getNullable() + ", ");
          sw.write("\"pkPart\": ");
-         @Nullable Integer pkPartNum = f.getPrimaryKeyPartNumber();
+         Integer pkPartNum = f.getPrimaryKeyPartNumber();
          sw.write(pkPartNum != null ? pkPartNum.toString() : "null");
          sw.write("},\n");
       }
@@ -127,7 +127,7 @@ public class TypeScriptWriter implements SourceCodeWriter
       return sw.toString();
    }
 
-   private @Nullable Path getOutputFilePath()
+   private Path getOutputFilePath()
    {
       return applyIfPresent(srcOutputDir, d -> d.resolve("relations.ts"));
    }

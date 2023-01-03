@@ -8,9 +8,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-@JsonPropertyOrder({
-   "name", "databaseType", "nullable", "primaryKeyPartNumber", "length", "precision", "precisionRadix"
-})
 public class Field {
 
    private String name;
@@ -19,17 +16,17 @@ public class Field {
 
    private String databaseType;
 
-   private @Nullable Integer length;
+   private Integer length;
 
-   private @Nullable Integer precision;
+   private Integer precision;
 
-   private @Nullable Integer precisionRadix;
+   private Integer precisionRadix;
 
-   private @Nullable Integer fractionalDigits;
+   private Integer fractionalDigits;
 
-   private @Nullable Boolean nullable;
+   private Boolean nullable;
 
-   private @Nullable Integer primaryKeyPartNumber;
+   private Integer primaryKeyPartNumber;
 
 
    public Field
@@ -37,12 +34,12 @@ public class Field {
          String name,
          int jdbcTypeCode,
          String databaseType,
-         @Nullable Integer length,
-         @Nullable Integer precision,
-         @Nullable Integer precisionRadix,
-         @Nullable Integer fractionalDigits,
-         @Nullable Boolean nullable,
-         @Nullable Integer primaryKeyPartNumber
+         Integer length,
+         Integer precision,
+         Integer precisionRadix,
+         Integer fractionalDigits,
+         Boolean nullable,
+         Integer primaryKeyPartNumber
       )
    {
       this.name = requireNonNull(name);
@@ -68,22 +65,20 @@ public class Field {
 
    public String getDatabaseType() { return databaseType; }
 
-   public @Nullable Integer getLength() { return length; }
+   public Integer getLength() { return length; }
 
-   public @Nullable Integer getFractionalDigits() { return fractionalDigits; }
+   public Integer getFractionalDigits() { return fractionalDigits; }
 
-   public @Nullable Integer getPrecision() { return precision; }
+   public Integer getPrecision() { return precision; }
 
-   public @Nullable Integer getPrecisionRadix() { return precisionRadix; }
+   public Integer getPrecisionRadix() { return precisionRadix; }
 
-   public @Nullable Boolean getNullable() { return nullable; }
+   public Boolean getNullable() { return nullable; }
 
-   public @Nullable Integer getPrimaryKeyPartNumber() { return primaryKeyPartNumber; }
+   public Integer getPrimaryKeyPartNumber() { return primaryKeyPartNumber; }
 
-   @JsonIgnore
    public boolean isNumericType() { return isJdbcTypeNumeric(jdbcTypeCode); }
 
-   @JsonIgnore
    public boolean isCharacterType() { return isJdbcTypeChar(jdbcTypeCode); }
 
    public static boolean isJdbcTypeNumeric(int jdbcType)

@@ -8,8 +8,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 public class RecordCondition
 {
    private final String sql;
-   private final @Nullable List<String> paramNames;
-   private final @Nullable String withTableAliasAs; // table alias variable used in sql
+   private final List<String> paramNames;
+   private final String withTableAliasAs; // table alias variable used in sql
 
    private RecordCondition()
    {
@@ -21,8 +21,8 @@ public class RecordCondition
    public RecordCondition
       (
          String sql,
-         @Nullable List<String> paramNames,
-         @Nullable String withTableAliasAs
+         List<String> paramNames,
+         String withTableAliasAs
       )
    {
       this.sql = sql;
@@ -32,8 +32,8 @@ public class RecordCondition
 
    public String getSql() { return sql; }
 
-   public @Nullable List<String> getParamNames() { return paramNames; }
+   public List<String> getParamNames() { return paramNames; }
 
-   public @Nullable String getWithTableAliasAs() { return withTableAliasAs; }
+   public String getWithTableAliasAs() { return withTableAliasAs; }
 }
 

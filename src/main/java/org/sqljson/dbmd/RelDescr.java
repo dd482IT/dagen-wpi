@@ -10,13 +10,13 @@ public class RelDescr {
 
    private RelMetadata.RelType relType;
 
-   private @Nullable String relComment;
+   private String relComment;
 
    public RelDescr
       (
          RelId relId,
          RelMetadata.RelType relType,
-         @Nullable String relComment
+         String relComment
       )
    {
       this.relId = requireNonNull(relId);
@@ -34,5 +34,5 @@ public class RelDescr {
 
    public RelMetadata.RelType getRelationType() { return relType; }
 
-   public @Nullable String getRelationComment() { return relComment; }
+   public String getRelationComment() { return relComment; }
 }

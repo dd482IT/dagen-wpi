@@ -178,7 +178,7 @@ public class QueryGeneratorMain
    private static SourceCodeWriter getSourceCodeWriter
       (
          List<String> optionalArgs,
-         @Nullable Path srcOutputBaseDir
+         Path srcOutputBaseDir
       )
    {
       String langStr = "";
@@ -188,7 +188,7 @@ public class QueryGeneratorMain
       boolean generateJavaSetters = false;
 
       var nullableFieldRepr = JavaWriter.NullableFieldRepr.ANNOTATED;
-      @Nullable String typeFilesHeader = null;
+      String typeFilesHeader = null;
       for ( String opt : optionalArgs )
       {
          if ( opt.startsWith(sqlResourcePathInGeneratedSourceOptPrefix) )
@@ -281,7 +281,7 @@ public class QueryGeneratorMain
       for ( var parentSpec : tableSpec.getParentTablesList() )
          paramNames.addAll(getParamNames(parentSpec.getParentTableJsonSpec()));
 
-      @Nullable RecordCondition recCond = tableSpec.getRecordCondition();
+      RecordCondition recCond = tableSpec.getRecordCondition();
       if ( recCond != null && recCond.getParamNames() != null )
          paramNames.addAll(requireNonNull(recCond.getParamNames()));
 

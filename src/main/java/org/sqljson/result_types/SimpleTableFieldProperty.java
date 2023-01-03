@@ -13,17 +13,17 @@ public class SimpleTableFieldProperty
    private final String name;
    private final int jdbcTypeCode;
    private final String databaseType;
-   private final @Nullable Integer length;
-   private final @Nullable Integer precision;
-   private final @Nullable Integer fractionalDigits;
-   private final @Nullable Boolean nullable;
-   private final @Nullable String specifiedSourceCodeFieldType;
+   private final Integer length;
+   private final Integer precision;
+   private final Integer fractionalDigits;
+   private final Boolean nullable;
+   private final String specifiedSourceCodeFieldType;
 
    SimpleTableFieldProperty
       (
          String name,
          Field dbField,
-         @Nullable String specifiedSourceCodeFieldType
+         String specifiedSourceCodeFieldType
       )
    {
       this.name = name;
@@ -41,11 +41,11 @@ public class SimpleTableFieldProperty
          String name,
          int jdbcTypeCode,
          String databaseType,
-         @Nullable Integer length,
-         @Nullable Integer precision,
-         @Nullable Integer fractionalDigits,
-         @Nullable Boolean nullable,
-         @Nullable String specifiedSourceCodeFieldType
+         Integer length,
+         Integer precision,
+         Integer fractionalDigits,
+         Boolean nullable,
+         String specifiedSourceCodeFieldType
       )
    {
       this.name = name;
@@ -61,11 +61,11 @@ public class SimpleTableFieldProperty
    public String getName() { return name; }
    public int getJdbcTypeCode() { return jdbcTypeCode; }
    public String getDatabaseType() { return databaseType; }
-   public @Nullable Integer getLength() { return length; }
-   public @Nullable Integer getPrecision() { return precision; }
-   public @Nullable Integer getFractionalDigits() { return fractionalDigits; }
-   public @Nullable Boolean getNullable() { return nullable; }
-   public @Nullable String getSpecifiedSourceCodeFieldType() { return specifiedSourceCodeFieldType; }
+   public Integer getLength() { return length; }
+   public Integer getPrecision() { return precision; }
+   public Integer getFractionalDigits() { return fractionalDigits; }
+   public Boolean getNullable() { return nullable; }
+   public String getSpecifiedSourceCodeFieldType() { return specifiedSourceCodeFieldType; }
 
    SimpleTableFieldProperty toNullable()
    {
@@ -78,7 +78,7 @@ public class SimpleTableFieldProperty
    }
 
    @Override
-   public boolean equals(@Nullable Object o)
+   public boolean equals(Object o)
    {
       if (this == o) return true;
       if (o == null || getClass() != o.getClass()) return false;

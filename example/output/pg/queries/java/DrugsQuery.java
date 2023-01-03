@@ -20,7 +20,6 @@ public class DrugsQuery
    public static final Class<Drug> principalResultClass = Drug.class;
 
 
-   @DefaultQualifier(value=NonNull.class)
    @SuppressWarnings("nullness") // because fields will be set directly by the deserializer not by constructor
    public static class Drug
    {
@@ -39,7 +38,6 @@ public class DrugsQuery
       public Compound compound;
    }
 
-   @DefaultQualifier(value=NonNull.class)
    @SuppressWarnings("nullness") // because fields will be set directly by the deserializer not by constructor
    public static class Analyst
    {
@@ -47,7 +45,6 @@ public class DrugsQuery
       public String shortName;
    }
 
-   @DefaultQualifier(value=NonNull.class)
    @SuppressWarnings("nullness") // because fields will be set directly by the deserializer not by constructor
    public static class Compound
    {
@@ -58,14 +55,12 @@ public class DrugsQuery
       public Analyst enteredByAnalyst;
    }
 
-   @DefaultQualifier(value=NonNull.class)
    @SuppressWarnings("nullness") // because fields will be set directly by the deserializer not by constructor
    public static class DrugReference
    {
       public String publication;
    }
 
-   @DefaultQualifier(value=NonNull.class)
    @SuppressWarnings("nullness") // because fields will be set directly by the deserializer not by constructor
    public static class Brand
    {
@@ -73,7 +68,6 @@ public class DrugsQuery
       public @Nullable String manufacturer;
    }
 
-   @DefaultQualifier(value=NonNull.class)
    @SuppressWarnings("nullness") // because fields will be set directly by the deserializer not by constructor
    public static class Advisory
    {
@@ -85,7 +79,6 @@ public class DrugsQuery
       public long exprYieldingTwo;
    }
 
-   @DefaultQualifier(value=NonNull.class)
    @SuppressWarnings("nullness") // because fields will be set directly by the deserializer not by constructor
    public static class DrugFunctionalCategory
    {

@@ -16,13 +16,13 @@ public final class QuerySpec
 {
    private final String queryName;
    private final TableJsonSpec tableJson;
-   private final @Nullable List<ResultRepr> resultRepresentations;
-   private final @Nullable Boolean generateResultTypes;
-   private final @Nullable Boolean generateSource; // Contains at least the resource name for generated SQL, if not result types.
-   private final @Nullable PropertyNameDefault propertyNameDefault; // inherited from query group spec if empty
-   private final @Nullable String orderBy;
-   private final @Nullable Boolean forUpdate;
-   private final @Nullable String typesFileHeader;
+   private final List<ResultRepr> resultRepresentations;
+   private final Boolean generateResultTypes;
+   private final Boolean generateSource; // Contains at least the resource name for generated SQL, if not result types.
+   private final PropertyNameDefault propertyNameDefault; // inherited from query group spec if empty
+   private final String orderBy;
+   private final Boolean forUpdate;
+   private final String typesFileHeader;
 
    private QuerySpec()
    {
@@ -41,13 +41,13 @@ public final class QuerySpec
       (
          String queryName,
          TableJsonSpec tableJson,
-         @Nullable List<ResultRepr> resultRepresentations,
-         @Nullable Boolean generateResultTypes,
-         @Nullable Boolean generateSource,
-         @Nullable PropertyNameDefault propertyNameDefault,
-         @Nullable String orderBy,
-         @Nullable Boolean forUpdate,
-         @Nullable String typesFileHeader
+         List<ResultRepr> resultRepresentations,
+         Boolean generateResultTypes,
+         Boolean generateSource,
+         PropertyNameDefault propertyNameDefault,
+         String orderBy,
+         Boolean forUpdate,
+         String typesFileHeader
       )
    {
       this.queryName = queryName;
@@ -71,43 +71,39 @@ public final class QuerySpec
    public String getQueryName() { return queryName; }
 
    /// Generates a SQL query for each of the specified result representations.
-   public @Nullable List<ResultRepr> getResultRepresentations() { return resultRepresentations; }
+   public List<ResultRepr> getResultRepresentations() { return resultRepresentations; }
 
-   @JsonIgnore
    public List<ResultRepr> getResultRepresentationsList()
    {
       return resultRepresentations != null ? resultRepresentations : singletonList(JSON_OBJECT_ROWS);
    }
 
-   public @Nullable Boolean getGenerateResultTypes() { return generateResultTypes; }
+   public Boolean getGenerateResultTypes() { return generateResultTypes; }
 
-   @JsonIgnore
    public boolean getGenerateResultTypesOrDefault()
    {
       return generateResultTypes != null ? generateResultTypes: true;
    }
 
-   public @Nullable Boolean getGenerateSource() { return generateSource; }
+   public Boolean getGenerateSource() { return generateSource; }
 
-   @JsonIgnore
    public boolean getGenerateSourceOrDefault()
    {
       return generateSource != null ? generateSource: true;
    }
 
-   public @Nullable PropertyNameDefault getPropertyNameDefault() { return propertyNameDefault; }
+   public PropertyNameDefault getPropertyNameDefault() { return propertyNameDefault; }
 
    public TableJsonSpec getTableJson() { return tableJson; }
 
-   public @Nullable String getOrderBy() { return orderBy; }
+   public String getOrderBy() { return orderBy; }
 
-   public @Nullable Boolean getForUpdate() { return forUpdate; }
+   public Boolean getForUpdate() { return forUpdate; }
 
-   @JsonIgnore
    public boolean getForUpdateOrDefault()
    {
       return forUpdate != null ? forUpdate : false;
    }
 
-   public @Nullable String getTypesFileHeader() { return typesFileHeader; }
+   public String getTypesFileHeader() { return typesFileHeader; }
 }

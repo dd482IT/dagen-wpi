@@ -11,7 +11,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-@JsonPropertyOrder({"relationId", "relationType", "fields"})
 public class RelMetadata
 {
    private final RelId relationId;
@@ -48,7 +47,6 @@ public class RelMetadata
 
    public List<Field> getFields() { return fields; }
 
-   @JsonIgnore()
    public List<Field> getPrimaryKeyFields()
    {
       List<Field> pks = new ArrayList<>();
@@ -60,20 +58,19 @@ public class RelMetadata
       }
 
       pks.sort(Comparator.comparingInt(f -> {
-         @Nullable Integer pn = f.getPrimaryKeyPartNumber();
+         Integer pn = f.getPrimaryKeyPartNumber();
          return pn != null ? pn : 0;
       }));
 
       return pks;
    }
 
-   @JsonIgnore()
    public List<String> getPrimaryKeyFieldNames()
    {
       return getPrimaryKeyFieldNames(null);
    }
 
-   public List<String> getPrimaryKeyFieldNames(@Nullable String alias)
+   public List<String> getPrimaryKeyFieldNames(String alias)
    {
       return
          getPrimaryKeyFields().stream()

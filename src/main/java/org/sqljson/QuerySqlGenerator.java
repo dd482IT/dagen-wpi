@@ -29,7 +29,7 @@ public class QuerySqlGenerator
 {
    private final DatabaseMetadata dbmd;
    private final SqlDialect sqlDialect;
-   private final @Nullable String defaultSchema;
+   private final String defaultSchema;
    private final Set<String> unqualifiedNamesSchemas; // Use unqualified names for objects in these schemas.
    private final int indentSpaces;
    private final Function<String,String> defaultPropNameFn; // default output property naming function
@@ -54,7 +54,7 @@ public class QuerySqlGenerator
    public QuerySqlGenerator
       (
          DatabaseMetadata dbmd,
-         @Nullable String defaultSchema,
+         String defaultSchema,
          Set<String> unqualifiedNamesSchemas,
          Function<String,String> defaultPropNameFn
       )
@@ -127,9 +127,9 @@ public class QuerySqlGenerator
    private BaseQuery baseQuery
       (
          TableJsonSpec tableSpec,
-         @Nullable ParentChildCondition parentChildCond,
+         ParentChildCondition parentChildCond,
          boolean exportPkFieldsHidden,
-         @Nullable String orderBy,
+         String orderBy,
          Function<String,String> propNameFn,
          SpecLocation specLoc
       )
@@ -205,7 +205,7 @@ public class QuerySqlGenerator
    {
       verifyTableFieldExpressionsValid(tableSpec, defaultSchema, dbmd, specLoc);
 
-      @Nullable List<TableFieldExpr> fieldExprs = tableSpec.getFieldExpressions();
+      List<TableFieldExpr> fieldExprs = tableSpec.getFieldExpressions();
       if (  fieldExprs == null )
          return emptyList();
       else
@@ -322,7 +322,7 @@ public class QuerySqlGenerator
          SpecLocation specLoc
       )
    {
-      @Nullable CustomJoinCondition customJoinCond = parentSpec.getCustomJoinCondition();
+      CustomJoinCondition customJoinCond = parentSpec.getCustomJoinCondition();
 
       if ( customJoinCond != null )
       {
@@ -333,7 +333,7 @@ public class QuerySqlGenerator
       }
       else
       {
-         @Nullable Set<String> childForeignKeyFieldsSet = parentSpec.getChildForeignKeyFieldsSet();
+         Set<String> childForeignKeyFieldsSet = parentSpec.getChildForeignKeyFieldsSet();
          RelId parentRelId = identifyTable(parentSpec.getParentTableJsonSpec().getTable(), specLoc);
          ForeignKey fk = getForeignKey(childRelId, parentRelId, childForeignKeyFieldsSet, specLoc);
          return new ParentPkCondition(childAlias, fk.getForeignKeyComponents());
@@ -420,7 +420,7 @@ public class QuerySqlGenerator
          SpecLocation specLoc
       )
    {
-      @Nullable List<ChildCollectionSpec> childSpecs = tableSpec.getChildTableCollections();
+      List<ChildCollectionSpec> childSpecs = tableSpec.getChildTableCollections();
 
       if ( childSpecs == null )
          return emptyList();
@@ -473,7 +473,7 @@ public class QuerySqlGenerator
          SpecLocation specLoc
       )
    {
-      @Nullable CustomJoinCondition customJoinCond = childCollectionSpec.getCustomJoinCondition();
+      CustomJoinCondition customJoinCond = childCollectionSpec.getCustomJoinCondition();
 
       if ( customJoinCond != null ) // custom join condition specified
       {
@@ -484,7 +484,7 @@ public class QuerySqlGenerator
       }
       else // foreign key join condition
       {
-         @Nullable Set<String> fkFields = childCollectionSpec.getForeignKeyFieldsSet();
+         Set<String> fkFields = childCollectionSpec.getForeignKeyFieldsSet();
          ForeignKey fk = getForeignKey(childRelId, parentRelId, fkFields, specLoc);
          return new ChildFkCondition(parentAlias, fk.getForeignKeyComponents());
       }
@@ -518,9 +518,9 @@ public class QuerySqlGenerator
    private String jsonArrayRowSql
       (
          TableJsonSpec tableSpec,
-         @Nullable ParentChildCondition parentChildCond,
+         ParentChildCondition parentChildCond,
          boolean unwrap,
-         @Nullable String orderBy,
+         String orderBy,
          Function<String, String> propNameFn,
          SpecLocation specLoc
       )
@@ -554,8 +554,8 @@ public class QuerySqlGenerator
    private String jsonObjectRowsSql
       (
          TableJsonSpec tjSpec,
-         @Nullable ParentChildCondition parentChildCond,
-         @Nullable String orderBy,
+         ParentChildCondition parentChildCond,
+         String orderBy,
          Function<String, String> propNameFn,
          SpecLocation specLoc
       )
@@ -575,13 +575,13 @@ public class QuerySqlGenerator
          (orderBy != null ? "\norder by " + orderBy.replace("$$", "q") : "");
    }
 
-   private @Nullable String recordConditionSql
+   private String recordConditionSql
       (
          TableJsonSpec tableSpec,
          String tableAlias
       )
    {
-      @Nullable RecordCondition cond = tableSpec.getRecordCondition();
+      RecordCondition cond = tableSpec.getRecordCondition();
       if ( cond != null )
       {
          String tableAliasVar = valueOr(cond.getWithTableAliasAs(), DEFAULT_TABLE_ALIAS_VAR);
@@ -595,11 +595,11 @@ public class QuerySqlGenerator
       (
          RelId childRelId,
          RelId parentRelId,
-         @Nullable Set<String> foreignKeyFields,
+         Set<String> foreignKeyFields,
          SpecLocation specLoc
       )
    {
-      @Nullable ForeignKey fk = dbmd.getForeignKeyFromTo(childRelId, parentRelId, foreignKeyFields, REGISTERED_TABLES_ONLY);
+      ForeignKey fk = dbmd.getForeignKeyFromTo(childRelId, parentRelId, foreignKeyFields, REGISTERED_TABLES_ONLY);
 
       if ( fk == null )
       {
@@ -635,7 +635,7 @@ public class QuerySqlGenerator
    /// qualifier if it has a schema for which it's specified to use unqualified names.
    private String minimalRelIdentifier(RelId relId)
    {
-      @Nullable String schema = relId.getSchema();
+      String schema = relId.getSchema();
       if ( schema == null || unqualifiedNamesSchemas.contains(dbmd.normalizeName(schema)) )
          return relId.getName();
       else
@@ -804,7 +804,7 @@ public class QuerySqlGenerator
       private final String valueExpression;
       private final String name;
       private final Source source;
-      private final @Nullable String comment;
+      private final String comment;
 
       public SelectEntry(String valueExpression, String name, Source source) { this(valueExpression, name, source, null); }
       public SelectEntry
@@ -812,7 +812,7 @@ public class QuerySqlGenerator
             String valueExpression,
             String name,
             Source source,
-            @Nullable String comment
+            String comment
          )
       {
          this.valueExpression = valueExpression;
@@ -827,7 +827,7 @@ public class QuerySqlGenerator
 
       Source getSource() { return source; }
 
-      @Nullable String getComment() { return comment; }
+      String getComment() { return comment; }
    }
 
    private static class SqlParts
@@ -835,7 +835,7 @@ public class QuerySqlGenerator
       private final List<SelectEntry> selectEntries;
       private final List<String> fromEntries;
       private final List<String> whereEntries;
-      private @Nullable String orderBy;
+      private String orderBy;
       private final Set<String> aliasesInScope;
 
       SqlParts()
@@ -852,7 +852,7 @@ public class QuerySqlGenerator
             List<SelectEntry> selectEntries,
             List<String> fromEntries,
             List<String> whereEntries,
-            @Nullable String orderBy,
+            String orderBy,
             Set<String> aliasesInScope
          )
       {
@@ -905,7 +905,7 @@ public class QuerySqlGenerator
       private static String makeSelectClauseEntrySql(SelectEntry sce)
       {
          String exprNameSep = sce.getName().startsWith("\"") ? " " : " as ";
-         @Nullable String comment = sce.getComment();
+         String comment = sce.getComment();
          return
             (comment != null ? comment + "\n" : "") +
             sce.getValueExpression() + exprNameSep + sce.getName();

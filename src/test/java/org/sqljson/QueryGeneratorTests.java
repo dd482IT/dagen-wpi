@@ -30,16 +30,12 @@ class QueryGeneratorTests extends TestsBase
       this.dbmd = getDatabaseMetadata("dbmd-pg.yaml");
    }
 
-   @BeforeAll
-   @DisplayName("Check that the testing database is available.")
    static void checkDatabaseConnection()
    {
       assertTestDatabaseAvailable();
    }
 
 
-   @Test
-   @DisplayName("Query for single drug table row in multi-column-rows result mode yields expected column values.")
    void readDrugNativeFields() throws Exception
    {
       String sql = getGeneratedQuerySql("drug fields query with param(multi column rows).sql");
@@ -53,8 +49,6 @@ class QueryGeneratorTests extends TestsBase
       });
    }
 
-   @Test
-   @DisplayName("Query for single drug table row in multi-column-rows result mode using 'condition' to find the row.")
    void readDrugNativeFieldsViaOtherCondition() throws Exception
    {
       String sql = getGeneratedQuerySql("drug fields query with other cond(multi column rows).sql");
@@ -69,8 +63,6 @@ class QueryGeneratorTests extends TestsBase
    }
 
 
-   @Test
-   @DisplayName("Query for one drug selecting a subset of native fields, deserialize result row to generated type.")
    void readDrugNativeFieldsAsGeneratedType() throws Exception
    {
       String sql = getGeneratedQuerySql("drug fields query with param(json object rows).sql");
@@ -85,8 +77,6 @@ class QueryGeneratorTests extends TestsBase
       });
    }
 
-   @Test
-   @DisplayName("Query for a drug selecting some native fields, with a field type customized, deserialize to generated type.")
    void readDrugNativeFieldsWithOneCustomizedAsGeneratedType() throws Exception
    {
       String sql = getGeneratedQuerySql("drug fields customized type query(json object rows).sql");
@@ -100,8 +90,6 @@ class QueryGeneratorTests extends TestsBase
       });
    }
 
-   @Test
-   @DisplayName("Query for a drug selecting some native fields, with a field type customized, deserialize to generated type.")
    void readDrugWithFieldExpression() throws Exception
    {
       String sql = getGeneratedQuerySql("drug with field expression query(json object rows).sql");
@@ -115,8 +103,6 @@ class QueryGeneratorTests extends TestsBase
       });
    }
 
-   @Test
-   @DisplayName("Query for a drug with related brands child collection included, deserialize to generated type.")
    void readDrugWithBrandsChildCollection() throws Exception
    {
       String sql = getGeneratedQuerySql("drug with brands query(json object rows).sql");
@@ -133,8 +119,6 @@ class QueryGeneratorTests extends TestsBase
       });
    }
 
-   @Test
-   @DisplayName("Query for a drug with related brands child collection via custom join, deserialize to generated type.")
    void readDrugWithBrandsChildCollectionViaCustomJoin() throws Exception
    {
       String sql = getGeneratedQuerySql("drug with brands custom join query(json object rows).sql");
@@ -152,8 +136,6 @@ class QueryGeneratorTests extends TestsBase
    }
 
 
-   @Test
-   @DisplayName("Query for a drug with related brands and advisories, deserialize to generated type.")
    void readDrugWithBrandsAndAdvisoriesChildCollections() throws Exception
    {
       String sql = getGeneratedQuerySql("drug with brands and advisories query(json object rows).sql");
@@ -179,8 +161,6 @@ class QueryGeneratorTests extends TestsBase
       });
    }
 
-   @Test
-   @DisplayName("Query for a drug with unwrapped advisory ids, deserialize to generated type.")
    void readDrugWithUnwrappedAdvisoryIds() throws Exception
    {
       String sql = getGeneratedQuerySql("drug with unwrapped advisory ids query(json object rows).sql");
@@ -194,8 +174,6 @@ class QueryGeneratorTests extends TestsBase
       });
    }
 
-   @Test
-   @DisplayName("Query for a drug with unwrapped advisory texts, deserialize to generated type.")
    void readDrugWithUnwrappedAdvisoryTexts() throws Exception
    {
       String sql = getGeneratedQuerySql("drug with unwrapped advisory texts query(json object rows).sql");
@@ -212,8 +190,6 @@ class QueryGeneratorTests extends TestsBase
       });
    }
 
-   @Test
-   @DisplayName("Query for a drug with unwrapped advisory type names, deserialize to generated type.")
    void readDrugWithUnwrappedAdvisoryTypeNames() throws Exception
    {
       String sql = getGeneratedQuerySql("drug with unwrapped advisory type names query(json object rows).sql");
@@ -230,8 +206,6 @@ class QueryGeneratorTests extends TestsBase
       });
    }
 
-   @Test
-   @DisplayName("Query for an advisory with inline advisory type parent, deserialize to generated type.")
    void readAdvisoryWithInlineAdvisoryTypeParent() throws Exception
    {
       String sql = getGeneratedQuerySql("advisory with inline advisory type query(json object rows).sql");
@@ -247,8 +221,6 @@ class QueryGeneratorTests extends TestsBase
       });
    }
 
-   @Test
-   @DisplayName("Query for an advisory with custom-joined inline advisory type parent, deserialize to generated type.")
    void readAdvisoryWithCustomJoinedInlineAdvisoryTypeParent() throws Exception
    {
       String sql = getGeneratedQuerySql("advisory with inline custom joined advisory type query(json object rows).sql");
@@ -264,8 +236,6 @@ class QueryGeneratorTests extends TestsBase
       });
    }
 
-   @Test
-   @DisplayName("Query for a drug with wrapped (object ref) analyst parent, deserialize to generated type.")
    void readDrugWithWrappedAnalystParent() throws Exception
    {
       String sql = getGeneratedQuerySql("drug with wrapped analyst query(json object rows).sql");
@@ -280,8 +250,6 @@ class QueryGeneratorTests extends TestsBase
       });
    }
 
-   @Test
-   @DisplayName("Query for a drug with wrapped analyst parent via custom join, deserialize to generated type.")
    void readDrugWithWrappedAnalystParentViaCustomJoin() throws Exception
    {
       String sql = getGeneratedQuerySql("drug with wrapped analyst via custom join query(json object rows).sql");
@@ -297,8 +265,6 @@ class QueryGeneratorTests extends TestsBase
       });
    }
 
-   @Test
-   @DisplayName("Query for a drug with an explicit foreign key reference to compound, deserialize to generated type.")
    void readDrugWithCompoundByExplicitForeignKey() throws Exception
    {
       String sql = getGeneratedQuerySql("drug with explicit compound reference query(json object rows).sql");
@@ -312,7 +278,6 @@ class QueryGeneratorTests extends TestsBase
       });
    }
 
-   @Test
    void rejectBadForeignKeyReferenceInQuerySpec()
    {
       QueryGroupSpec queryGroupSpec = readBadQuerySpec("bad-foreign-key-field-ref.yaml");
@@ -330,7 +295,6 @@ class QueryGeneratorTests extends TestsBase
       assertTrue(msg.contains("no foreign key found") && msg.contains("x_compound_id"));
    }
 
-   @Test
    void rejectBadFieldReferenceInQuerySpec()
    {
       QueryGroupSpec queryGroupSpec = readBadQuerySpec("bad-field-ref.yaml");
@@ -349,7 +313,6 @@ class QueryGeneratorTests extends TestsBase
       assertTrue(msg.contains("[xname]"));
    }
 
-   @Test
    void rejectBadTableReferenceInQuerySpec()
    {
       QueryGroupSpec queryGroupSpec = readBadQuerySpec("bad-table-ref.yaml");
@@ -368,7 +331,6 @@ class QueryGeneratorTests extends TestsBase
    }
 
 
-   @Test
    void rejectBadFieldInChildInQuerySpec()
    {
       QueryGroupSpec queryGroupSpec = readBadQuerySpec("drug-with-bad-field-in-child.yaml");
@@ -387,7 +349,6 @@ class QueryGeneratorTests extends TestsBase
    }
 
 
-   @Test
    void rejectBadFieldInChildsInlineParentInQuerySpec()
    {
       QueryGroupSpec queryGroupSpec = readBadQuerySpec("drug-with-bad-field-in-childs-inline-parent.yaml");
@@ -405,7 +366,6 @@ class QueryGeneratorTests extends TestsBase
       assertTrue(msg.contains("[namex]"));
    }
 
-   @Test
    void rejectBadParentFieldInCustomJoinInQuerySpec()
    {
       QueryGroupSpec queryGroupSpec = readBadQuerySpec("drug-with-bad-parent-field-in-custom-join.yaml");
@@ -423,7 +383,6 @@ class QueryGeneratorTests extends TestsBase
       assertTrue(msg.contains("[idx]"));
    }
 
-   @Test
    void rejectBadChildFieldInCustomJoinInQuerySpec()
    {
       QueryGroupSpec queryGroupSpec = readBadQuerySpec("drug-with-bad-child-field-in-custom-join.yaml");

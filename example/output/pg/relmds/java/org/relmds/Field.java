@@ -12,21 +12,21 @@ public class Field
    public String name;
    public int jdbcTypeCode;
    public String databaseType;
-   public @Nullable Integer length;
-   public @Nullable Integer precision;
-   public @Nullable Integer fractionalDigits;
-   public @Nullable Boolean nullable;
-   public @Nullable Integer primaryKeyPartNumber;
+   public Integer length;
+   public Integer precision;
+   public Integer fractionalDigits;
+   public Boolean nullable;
+   public Integer primaryKeyPartNumber;
    public Field
       (
          String name,
          int jdbcTypeCode,
          String databaseType,
-         @Nullable Integer length,
-         @Nullable Integer precision,
-         @Nullable Integer fractionalDigits,
-         @Nullable Boolean nullable,
-         @Nullable Integer primaryKeyPartNumber
+         Integer length,
+         Integer precision,
+         Integer fractionalDigits,
+         Boolean nullable,
+         Integer primaryKeyPartNumber
       )
    {
       this.name = name;

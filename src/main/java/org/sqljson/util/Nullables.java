@@ -9,9 +9,9 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 public final class Nullables
 {
-   public static <T,U> @Nullable U applyIfPresent
+   public static <T,U> U applyIfPresent
       (
-         @Nullable T t,
+         T t,
          Function<T,U> f
       )
    {
@@ -20,7 +20,7 @@ public final class Nullables
 
    public static <T,U> U applyOr
       (
-         @Nullable T t,
+         T t,
          Function<T,U> f,
          U defaultVal
       )
@@ -30,7 +30,7 @@ public final class Nullables
 
    public static <T> void ifPresent
       (
-         @Nullable T t,
+         T t,
          Consumer<T> f
       )
    {
@@ -40,7 +40,7 @@ public final class Nullables
 
    public static <T> T valueOr
       (
-         @Nullable T t,
+         T t,
          T defaultVal
       )
    {
@@ -49,7 +49,7 @@ public final class Nullables
 
    public static <T> T valueOrGet
       (
-         @Nullable T t,
+         T t,
          Supplier<T> defaultValFn
       )
    {
@@ -58,7 +58,7 @@ public final class Nullables
 
    public static <T> T valueOrThrow
       (
-         @Nullable T t,
+         T t,
          Supplier<? extends RuntimeException> errFn
       )
    {

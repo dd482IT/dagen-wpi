@@ -19,13 +19,13 @@ public final class QuerySpecValidations
    public static RelId identifyTable
       (
          String table, // as from input, possibly qualified
-         @Nullable String defaultSchema,
+         String defaultSchema,
          DatabaseMetadata dbmd,
          SpecLocation specLocation
       )
       throws SpecError
    {
-      @Nullable RelMetadata relMd = dbmd.getRelationMetadata(dbmd.toRelId(table, defaultSchema));
+      RelMetadata relMd = dbmd.getRelationMetadata(dbmd.toRelId(table, defaultSchema));
 
       if ( relMd == null )
          throw new SpecError(
@@ -39,7 +39,7 @@ public final class QuerySpecValidations
    public static void verifyTableFieldExpressionsValid
       (
          TableJsonSpec tableSpec,
-         @Nullable String defaultSchema,
+         String defaultSchema,
          DatabaseMetadata dbmd,
          SpecLocation specLoc
       )
@@ -53,8 +53,8 @@ public final class QuerySpecValidations
       for ( int ix=0; ix < fieldExprs.size(); ++ix )
       {
          var fieldExpr = fieldExprs.get(ix);
-         @Nullable String field = fieldExpr.getField();
-         @Nullable String expr = fieldExpr.getExpression();
+         String field = fieldExpr.getField();
+         String expr = fieldExpr.getExpression();
 
          if ( expr != null && fieldExpr.getFieldTypeInGeneratedSource() == null )
             throw new SpecError(specLoc,
@@ -72,7 +72,7 @@ public final class QuerySpecValidations
             simpleSelectFields.add(field);
       }
 
-      @Nullable RelMetadata relMd = dbmd.getRelationMetadata(dbmd.toRelId(tableSpec.getTable(), defaultSchema));
+      RelMetadata relMd = dbmd.getRelationMetadata(dbmd.toRelId(tableSpec.getTable(), defaultSchema));
       if ( relMd == null )
          throw new SpecError(specLoc, "Table '" + tableSpec.getTable() + "' was not found in database metadata.");
 
@@ -89,8 +89,8 @@ public final class QuerySpecValidations
       )
       throws SpecError
    {
-      @Nullable RelMetadata parentMd = dbmd.getRelationMetadata(parentRelId);
-      @Nullable RelMetadata childMd = dbmd.getRelationMetadata(childRelId);
+      RelMetadata parentMd = dbmd.getRelationMetadata(parentRelId);
+      RelMetadata childMd = dbmd.getRelationMetadata(childRelId);
 
       if ( parentMd == null )
          throw new SpecError(stmtLoc.addPart("custom join condition"), "Parent table not found.");

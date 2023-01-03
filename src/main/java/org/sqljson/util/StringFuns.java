@@ -133,7 +133,7 @@ public final class StringFuns
 
    public static boolean matches
       (
-         @Nullable Pattern pat,
+         Pattern pat,
          String s
       )
    {

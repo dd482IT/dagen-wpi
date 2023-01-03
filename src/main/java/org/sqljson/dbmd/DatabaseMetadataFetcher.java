@@ -29,17 +29,17 @@ public class DatabaseMetadataFetcher
    public DatabaseMetadata fetchMetadata
       (
          DatabaseMetaData dbmd,
-         @Nullable String schema,
+         String schema,
          boolean includeTables,
          boolean includeViews,
          boolean includeFks,
-         @Nullable Pattern excludeRelsPat
+         Pattern excludeRelsPat
       )
       throws SQLException
    {
       CaseSensitivity caseSens = getDatabaseCaseSensitivity(dbmd);
 
-      @Nullable String nSchema = schema != null ? normalizeDatabaseIdentifier(schema, caseSens) : null;
+      String nSchema = schema != null ? normalizeDatabaseIdentifier(schema, caseSens) : null;
 
       List<RelDescr> relDescrs = fetchRelationDescriptions(dbmd, nSchema, includeTables, includeViews, excludeRelsPat);
 
@@ -60,7 +60,7 @@ public class DatabaseMetadataFetcher
          String schema,
          boolean includeTables,
          boolean includeViews,
-         @Nullable Pattern excludeRelsPattern
+         Pattern excludeRelsPattern
       )
       throws SQLException
    {
@@ -77,10 +77,10 @@ public class DatabaseMetadataFetcher
    public List<RelDescr> fetchRelationDescriptions
       (
          DatabaseMetaData dbmd,
-         @Nullable String schema,
+         String schema,
          boolean includeTables,
          boolean includeViews,
-         @Nullable Pattern excludeRelsPattern
+         Pattern excludeRelsPattern
       )
       throws SQLException
    {
@@ -96,7 +96,7 @@ public class DatabaseMetadataFetcher
 
       while ( rs.next() )
       {
-         @Nullable String relSchema = rs.getString("TABLE_SCHEM");
+         String relSchema = rs.getString("TABLE_SCHEM");
          String relName = requireNonNull(rs.getString("TABLE_NAME"));
 
          RelId relId = new RelId(relSchema, relName);
@@ -115,7 +115,7 @@ public class DatabaseMetadataFetcher
    public List<RelMetadata> fetchRelationMetadatas
       (
          List<RelDescr> relDescrs, // descriptions of relations to include
-         @Nullable String schema,
+         String schema,
          Connection conn
       )
       throws SQLException
@@ -126,7 +126,7 @@ public class DatabaseMetadataFetcher
    public List<RelMetadata> fetchRelationMetadatas
       (
          List<RelDescr> relDescrs, // descriptions of relations to include
-         @Nullable String schema,
+         String schema,
          DatabaseMetaData dbmd
       )
       throws SQLException
@@ -136,16 +136,16 @@ public class DatabaseMetadataFetcher
       try ( ResultSet colsRS = dbmd.getColumns(null, schema, "%", "%") )
       {
          List<RelMetadata> relMds = new ArrayList<>();
-         @Nullable RelMetadataBuilder rmdBldr = null;
+         RelMetadataBuilder rmdBldr = null;
 
          while ( colsRS.next() )
          {
-            @Nullable String relSchema = colsRS.getString("TABLE_SCHEM");
+            String relSchema = colsRS.getString("TABLE_SCHEM");
             String relName = requireNonNull(colsRS.getString("TABLE_NAME"));
 
             RelId relId = new RelId(relSchema, relName);
 
-            @Nullable RelDescr relDescr = relDescrsByRelId.get(relId);
+            RelDescr relDescr = relDescrsByRelId.get(relId);
             if ( relDescr != null ) // Include this relation?
             {
                Field f = makeField(colsRS, dbmd);
@@ -173,9 +173,9 @@ public class DatabaseMetadataFetcher
 
    public List<ForeignKey> fetchForeignKeys
       (
-         @Nullable String schema,
+         String schema,
          Connection conn,
-         @Nullable Pattern excludeRelsPattern
+         Pattern excludeRelsPattern
       )
       throws SQLException
    {
@@ -184,9 +184,9 @@ public class DatabaseMetadataFetcher
 
    public List<ForeignKey> fetchForeignKeys
       (
-         @Nullable String schema,
+         String schema,
          DatabaseMetaData dbmd,
-         @Nullable Pattern excludeRelsPattern
+         Pattern excludeRelsPattern
       )
       throws SQLException
    {
@@ -196,7 +196,7 @@ public class DatabaseMetadataFetcher
       // necessary to fetch tables for the schema first and call for the imported keys for each separately.
       try ( @SuppressWarnings("nullness") ResultSet rs = dbmd.getImportedKeys(null, schema, null) )
       {
-         @Nullable ForeignKeyBuilder fkBldr = null;
+         ForeignKeyBuilder fkBldr = null;
 
          while ( rs.next() )
          {
@@ -260,7 +260,7 @@ public class DatabaseMetadataFetcher
          return id;
    }
 
-   protected static @Nullable Integer getRSInt
+   protected static Integer getRSInt
       (
          ResultSet rs,
          String colName
@@ -298,17 +298,17 @@ public class DatabaseMetadataFetcher
             // Oracle uses proprietary "OPAQUE" code of 2007 as of 11.2, should be Types.SQLXML = 2009.
             typeCode = Types.SQLXML;
 
-         @Nullable Integer size = getRSInt(colsRS, "COLUMN_SIZE");
-         @Nullable Integer length = Field.isJdbcTypeChar(typeCode) ? size : null;
-         @Nullable Integer nullableCode = getRSInt(colsRS, "NULLABLE");
-         @Nullable Boolean nullable =
+         Integer size = getRSInt(colsRS, "COLUMN_SIZE");
+         Integer length = Field.isJdbcTypeChar(typeCode) ? size : null;
+         Integer nullableCode = getRSInt(colsRS, "NULLABLE");
+         Boolean nullable =
             nullableCode != null && nullableCode == ResultSetMetaData.columnNullable ? Boolean.TRUE
             : nullableCode != null && nullableCode == ResultSetMetaData.columnNoNulls ? Boolean.FALSE
             : null;
-         @Nullable Integer fracDigs = Field.isJdbcTypeNumeric(typeCode) ? getRSInt(colsRS, "DECIMAL_DIGITS") : null;
-         @Nullable Integer prec = Field.isJdbcTypeNumeric(typeCode) ? size : null;
-         @Nullable Integer precRadix = null; // TODO: Radix column?
-         @Nullable Integer pkPart = pkSeqNumsByName.get(name);
+         Integer fracDigs = Field.isJdbcTypeNumeric(typeCode) ? getRSInt(colsRS, "DECIMAL_DIGITS") : null;
+         Integer prec = Field.isJdbcTypeNumeric(typeCode) ? size : null;
+         Integer precRadix = null; // TODO: Radix column?
+         Integer pkPart = pkSeqNumsByName.get(name);
 
          return new Field(name, typeCode, dbType, length, prec, precRadix, fracDigs, nullable, pkPart);
       }

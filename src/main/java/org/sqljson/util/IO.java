@@ -7,7 +7,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 public final class IO
 {
-   public static BufferedWriter newFileOrStdoutWriter(@Nullable Path outputFilePath) throws IOException
+   public static BufferedWriter newFileOrStdoutWriter(Path outputFilePath) throws IOException
    {
       return outputFilePath != null ?
          java.nio.file.Files.newBufferedWriter(outputFilePath)

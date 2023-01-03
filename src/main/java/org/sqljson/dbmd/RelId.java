@@ -11,13 +11,13 @@ public final class RelId {
 
    static RelId DUMMY_INSTANCE = new RelId();
 
-   private @Nullable String schema;
+   private String schema;
 
    private String name;
 
    public RelId
       (
-         @Nullable String schema,
+         String schema,
          String name
       )
    {
@@ -30,7 +30,7 @@ public final class RelId {
       this.name = "";
    }
 
-   public @Nullable String getSchema() { return schema; }
+   public String getSchema() { return schema; }
 
    public String getName() { return name; }
 
@@ -40,14 +40,13 @@ public final class RelId {
       return getIdString();
    }
 
-   @JsonIgnore
    public String getIdString()
    {
       return (schema != null ? schema + "." : "") + name;
    }
 
 
-   public boolean equals(@Nullable Object other)
+   public boolean equals(Object other)
    {
       if ( !(other instanceof RelId) )
          return false;

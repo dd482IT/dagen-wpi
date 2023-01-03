@@ -9,14 +9,14 @@ import org.sqljson.util.StringFuns;
 
 class ForeignKeyBuilder
 {
-   private @Nullable String constraintName;
+   private String constraintName;
    private RelId srcRel;
    private RelId tgtRel;
    private List<ForeignKey.Component> comps;
 
    public ForeignKeyBuilder
       (
-         @Nullable String constraintName,
+         String constraintName,
          RelId srcRel,
          RelId tgtRel
       )
@@ -27,7 +27,7 @@ class ForeignKeyBuilder
       this.comps = new ArrayList<>();
    }
 
-   boolean neitherRelMatches(@Nullable Pattern relIdsPattern)
+   boolean neitherRelMatches(Pattern relIdsPattern)
    {
       return !(StringFuns.matches(relIdsPattern, srcRel.getIdString()) || StringFuns.matches(relIdsPattern, tgtRel.getIdString()));
    }

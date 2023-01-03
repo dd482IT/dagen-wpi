@@ -22,14 +22,14 @@ public interface SqlDialect
    String getAggregatedRowObjectsExpression
       (
          List<String> columnNames,
-         @Nullable String orderBy,
+         String orderBy,
          String fromAlias
       );
 
    String getAggregatedColumnValuesExpression
       (
          String columnName,
-         @Nullable String orderBy,
+         String orderBy,
          String fromAlias
       );
 

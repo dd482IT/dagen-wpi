@@ -9,7 +9,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 public class Props
 {
    // Get the property value for the first contained key if any.
-   public static @Nullable String getProperty
+   public static String getProperty
       (
          Properties p,
          String... keys

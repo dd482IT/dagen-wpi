@@ -23,12 +23,12 @@ import static org.sqljson.util.StringFuns.*;
 public class JavaWriter implements SourceCodeWriter
 {
    private final String targetPackage;
-   private final @Nullable Path packageOutputDir;
+   private final Path packageOutputDir;
 
    public JavaWriter
       (
          String targetPackage,
-         @Nullable Path srcOutputBaseDir
+         Path srcOutputBaseDir
       )
    {
       this.packageOutputDir = !targetPackage.isEmpty() ?
@@ -52,7 +52,7 @@ public class JavaWriter implements SourceCodeWriter
 
       String topClassName = "Relations";
 
-      @Nullable Path outputPath = getOutputFilePath(topClassName);
+      Path outputPath = getOutputFilePath(topClassName);
 
       BufferedWriter bw = newFileOrStdoutWriter(outputPath);
 
@@ -123,7 +123,7 @@ public class JavaWriter implements SourceCodeWriter
          sw.write(f.getPrecision() + ",");
          sw.write(f.getFractionalDigits() + ",");
          sw.write(f.getNullable() + ",");
-         @Nullable Integer pkPartNum = f.getPrimaryKeyPartNumber();
+         Integer pkPartNum = f.getPrimaryKeyPartNumber();
          sw.write(pkPartNum != null ? pkPartNum.toString() : "null");
          sw.write(");\n");
       }
@@ -137,7 +137,7 @@ public class JavaWriter implements SourceCodeWriter
       throws IOException
    {
       String className = "Field";
-      @Nullable Path outputFilePath = getOutputFilePath(className);
+      Path outputFilePath = getOutputFilePath(className);
 
       BufferedWriter bw = newFileOrStdoutWriter(outputFilePath);
 
@@ -203,7 +203,7 @@ public class JavaWriter implements SourceCodeWriter
          bw.write("package " + targetPackage + ";\n\n");
    }
 
-   private @Nullable Path getOutputFilePath(String className)
+   private Path getOutputFilePath(String className)
    {
       return applyIfPresent(packageOutputDir, d -> d.resolve(className + ".java"));
    }

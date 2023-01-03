@@ -1,4 +1,3 @@
-@DefaultQualifier(value=NonNull.class, locations=TypeUseLocation.ALL)
 package org.sqljson.result_types;
 
 import org.checkerframework.checker.nullness.qual.NonNull;

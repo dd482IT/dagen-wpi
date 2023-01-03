@@ -18,9 +18,6 @@ import static org.sqljson.dbmd.CaseSensitivity.INSENSITIVE_STORED_LOWER;
 import static org.sqljson.dbmd.CaseSensitivity.INSENSITIVE_STORED_UPPER;
 import static org.sqljson.util.Nullables.valueOr;
 
-@JsonPropertyOrder({
-   "dbmsName", "dbmsVersion", "caseSensitivity", "relationMetadatas", "foreignKeys"
-})
 public class DatabaseMetadata
 {
    private final String dbmsName;
@@ -39,11 +36,11 @@ public class DatabaseMetadata
 
    // derived data
    // Access these only via methods of the same name, which make sure these fields are initialized.
-   private @MonotonicNonNull Map<RelId, RelMetadata> relMDsByRelId;
+   private Map<RelId, RelMetadata> relMDsByRelId;
 
-   private @MonotonicNonNull Map<RelId, List<ForeignKey>> fksByParentRelId;
+   private Map<RelId, List<ForeignKey>> fksByParentRelId;
 
-   private @MonotonicNonNull Map<RelId, List<ForeignKey>> fksByChildRelId;
+   private Map<RelId, List<ForeignKey>> fksByChildRelId;
 
    public DatabaseMetadata
       (
@@ -80,7 +77,7 @@ public class DatabaseMetadata
 
    public String getDbmsVersion() { return dbmsVersion; }
 
-   public @Nullable RelMetadata getRelationMetadata(RelId relId)
+   public RelMetadata getRelationMetadata(RelId relId)
    {
       return relMDsByRelId().get(relId);
    }
@@ -88,7 +85,7 @@ public class DatabaseMetadata
    public List<String> getPrimaryKeyFieldNames
       (
          RelId relId,
-         @Nullable String alias
+         String alias
       )
    {
       RelMetadata relMd = requireNonNull(getRelationMetadata(relId));
@@ -103,8 +100,8 @@ public class DatabaseMetadata
 
    public List<ForeignKey> getForeignKeysFromTo
       (
-         @Nullable RelId childRelId,
-         @Nullable RelId parentRelId,
+         RelId childRelId,
+         RelId parentRelId,
          ForeignKeyScope fkScope
       )
    {
@@ -137,16 +134,16 @@ public class DatabaseMetadata
    /** Return a single foreign key between the passed tables, having the specified field names if specified,
     *  or null if not found. IllegalArgumentException is thrown if multiple foreign keys satisfy the requirements.
     */
-   public @Nullable ForeignKey getForeignKeyFromTo
+   public ForeignKey getForeignKeyFromTo
       (
          RelId fromRelId,
          RelId toRelId,
-         @Nullable Set<String> fieldNames,
+         Set<String> fieldNames,
          ForeignKeyScope fkScope
       )
    {
-      @Nullable ForeignKey soughtFk = null;
-      @Nullable Set<String> normdFkFieldNames = fieldNames != null ? normalizeNames(fieldNames) : null;
+      ForeignKey soughtFk = null;
+      Set<String> normdFkFieldNames = fieldNames != null ? normalizeNames(fieldNames) : null;
 
       for ( ForeignKey fk : getForeignKeysFromTo(fromRelId, toRelId, fkScope) )
       {
@@ -316,7 +313,7 @@ public class DatabaseMetadata
    /// Make a relation id from a given qualified or unqualified table identifier
    /// and an optional default schema for interpreting unqualified table names.
    /// The table is not verified to exist in the metadata.
-   public RelId toRelId(String table, @Nullable String defaultSchema)
+   public RelId toRelId(String table, String defaultSchema)
    {
       int dotIx = table.indexOf('.');
 

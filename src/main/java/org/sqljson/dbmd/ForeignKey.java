@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class ForeignKey implements Serializable {
 
-   private final @Nullable String constraintName;
+   private final String constraintName;
 
    private final RelId foreignKeyRelationId; // child/referencing table
 
@@ -24,7 +24,7 @@ public class ForeignKey implements Serializable {
 
    public ForeignKey
       (
-         @Nullable String constraintName,
+         String constraintName,
          RelId foreignKeyRelationId,
          RelId primaryKeyRelationId,
          List<Component> foreignKeyComponents
@@ -44,7 +44,7 @@ public class ForeignKey implements Serializable {
       this.foreignKeyComponents = Collections.emptyList();
    }
 
-   public @Nullable String getConstraintName() { return constraintName; }
+   public String getConstraintName() { return constraintName; }
 
    public RelId getForeignKeyRelationId() { return foreignKeyRelationId; }
 
@@ -52,7 +52,6 @@ public class ForeignKey implements Serializable {
 
    public List<Component> getForeignKeyComponents() { return foreignKeyComponents; }
 
-   @JsonIgnore()
    public List<String> getChildFieldNames()
    {
       List<String> names = new ArrayList<>();
@@ -63,7 +62,6 @@ public class ForeignKey implements Serializable {
       return names;
    }
 
-   @JsonIgnore()
    public List<String> getParentFieldNames()
    {
       List<String> names = new ArrayList<>();

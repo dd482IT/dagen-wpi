@@ -66,7 +66,7 @@ public class RelationMetadataSourceGeneratorMain
       if ( !Files.isRegularFile(dbmdPath) )
          throwError("Database metadata file not found.");
 
-      @Nullable Path outputDir = args.required.size() > 1 ? Paths.get(args.required.get(1)) : null;
+      Path outputDir = args.required.size() > 1 ? Paths.get(args.required.get(1)) : null;
 
       try ( var dbmdIS = Files.newInputStream(dbmdPath) )
       {
@@ -94,7 +94,7 @@ public class RelationMetadataSourceGeneratorMain
    private static SourceCodeWriter getSourceCodeWriter
       (
          SplitArgs args,
-         @Nullable Path srcOutputBaseDir
+         Path srcOutputBaseDir
       )
    {
       String langStr = "";
