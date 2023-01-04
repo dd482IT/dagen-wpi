@@ -1,0 +1,7 @@
+package org.sqljson.query_specs;
+
+@org.checkerframework.framework.qual.AnnotatedFor("org.checkerframework.checker.nullness.KeyForSubchecker")
+public enum ResultRepr {
+
+    MULTI_COLUMN_ROWS, JSON_OBJECT_ROWS, JSON_ARRAY_ROW
+}

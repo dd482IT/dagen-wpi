@@ -1,0 +1,143 @@
+package org.sqljson.query_specs;
+
+import java.util.*;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import static org.sqljson.util.Nullables.applyIfPresent;
+
+@org.checkerframework.framework.qual.AnnotatedFor("org.checkerframework.checker.nullness.NullnessChecker")
+public final class ChildCollectionSpec {
+
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String collectionName;
+
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull TableJsonSpec tableJson;
+
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.MonotonicNonNull List<String> foreignKeyFields;
+
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.MonotonicNonNull CustomJoinCondition customJoinCondition;
+
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.MonotonicNonNull String filter;
+
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull Boolean unwrap;
+
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.MonotonicNonNull String orderBy;
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.customJoinCondition" }, qualifier = org.checkerframework.checker.initialization.qual.FBCBottom.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.customJoinCondition" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.filter" }, qualifier = org.checkerframework.checker.initialization.qual.FBCBottom.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.filter" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.foreignKeyFields" }, qualifier = org.checkerframework.checker.initialization.qual.FBCBottom.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.foreignKeyFields" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.orderBy" }, qualifier = org.checkerframework.checker.initialization.qual.FBCBottom.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.orderBy" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    private ChildCollectionSpec() {
+        this.collectionName = "";
+        this.tableJson = new TableJsonSpec();
+        this.foreignKeyFields = null;
+        this.customJoinCondition = null;
+        this.filter = null;
+        this.unwrap = false;
+        this.orderBy = null;
+    }
+
+    @org.checkerframework.checker.nullness.qual.EnsuresNonNull({ "this.filter" })
+    @org.checkerframework.checker.nullness.qual.EnsuresNonNull({ "this.orderBy" })
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.customJoinCondition" }, qualifier = org.checkerframework.checker.initialization.qual.FBCBottom.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.customJoinCondition" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.foreignKeyFields" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    public ChildCollectionSpec(String collectionName, TableJsonSpec tableJson, List<String> fkFields, String filter, Boolean unwrap, String orderBy) {
+        this.collectionName = collectionName;
+        this.tableJson = tableJson;
+        this.foreignKeyFields = applyIfPresent(fkFields, Collections::unmodifiableList);
+        this.customJoinCondition = null;
+        this.filter = filter;
+        this.unwrap = unwrap;
+        this.orderBy = orderBy;
+    }
+
+    @org.checkerframework.checker.nullness.qual.EnsuresNonNull({ "this.customJoinCondition" })
+    @org.checkerframework.checker.nullness.qual.EnsuresNonNull({ "this.filter" })
+    @org.checkerframework.checker.nullness.qual.EnsuresNonNull({ "this.orderBy" })
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.foreignKeyFields" }, qualifier = org.checkerframework.checker.initialization.qual.FBCBottom.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.foreignKeyFields" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    public ChildCollectionSpec(String collectionName, TableJsonSpec tableJson, CustomJoinCondition customJoinCondition, String filter, Boolean unwrap, String orderBy) {
+        this.collectionName = collectionName;
+        this.tableJson = tableJson;
+        this.foreignKeyFields = null;
+        this.customJoinCondition = customJoinCondition;
+        this.filter = filter;
+        this.unwrap = unwrap;
+        this.orderBy = orderBy;
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.customJoinCondition" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.filter" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.foreignKeyFields" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.orderBy" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String getCollectionName() {
+        return collectionName;
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.customJoinCondition" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.filter" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.foreignKeyFields" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.orderBy" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull TableJsonSpec getTableJson() {
+        return tableJson;
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.customJoinCondition" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.filter" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.foreignKeyFields" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.orderBy" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable List<String> getForeignKeyFields() {
+        return foreignKeyFields;
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.customJoinCondition" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.filter" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.foreignKeyFields" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.orderBy" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable CustomJoinCondition getCustomJoinCondition() {
+        return customJoinCondition;
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.customJoinCondition" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.filter" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.foreignKeyFields" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.orderBy" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable Set<String> getForeignKeyFieldsSet() {
+        return applyIfPresent(foreignKeyFields, HashSet::new);
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.customJoinCondition" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.filter" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.foreignKeyFields" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.orderBy" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable String getFilter() {
+        return filter;
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.customJoinCondition" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.filter" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.foreignKeyFields" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.orderBy" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull Boolean getUnwrap() {
+        return unwrap;
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.customJoinCondition" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.filter" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.foreignKeyFields" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.orderBy" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable String getOrderBy() {
+        return orderBy;
+    }
+}

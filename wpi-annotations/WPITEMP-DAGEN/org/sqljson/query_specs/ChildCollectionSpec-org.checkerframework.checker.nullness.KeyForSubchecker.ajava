@@ -1,0 +1,93 @@
+package org.sqljson.query_specs;
+
+import java.util.*;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import static org.sqljson.util.Nullables.applyIfPresent;
+
+@org.checkerframework.framework.qual.AnnotatedFor("org.checkerframework.checker.nullness.KeyForSubchecker")
+public final class ChildCollectionSpec {
+
+    private final  String collectionName;
+
+    private final  TableJsonSpec tableJson;
+
+    private final  List<String> foreignKeyFields;
+
+    private final  CustomJoinCondition customJoinCondition;
+
+    private final  String filter;
+
+    private final  Boolean unwrap;
+
+    private final  String orderBy;
+
+    private ChildCollectionSpec() {
+        this.collectionName = "";
+        this.tableJson = new TableJsonSpec();
+        this.foreignKeyFields = null;
+        this.customJoinCondition = null;
+        this.filter = null;
+        this.unwrap = false;
+        this.orderBy = null;
+    }
+
+    public ChildCollectionSpec(String collectionName, TableJsonSpec tableJson, List<String> fkFields, String filter, Boolean unwrap, String orderBy) {
+        this.collectionName = collectionName;
+        this.tableJson = tableJson;
+        this.foreignKeyFields = applyIfPresent(fkFields, Collections::unmodifiableList);
+        this.customJoinCondition = null;
+        this.filter = filter;
+        this.unwrap = unwrap;
+        this.orderBy = orderBy;
+    }
+
+    public ChildCollectionSpec(String collectionName, TableJsonSpec tableJson, CustomJoinCondition customJoinCondition, String filter, Boolean unwrap, String orderBy) {
+        this.collectionName = collectionName;
+        this.tableJson = tableJson;
+        this.foreignKeyFields = null;
+        this.customJoinCondition = customJoinCondition;
+        this.filter = filter;
+        this.unwrap = unwrap;
+        this.orderBy = orderBy;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  String getCollectionName( ChildCollectionSpec this) {
+        return collectionName;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  TableJsonSpec getTableJson( ChildCollectionSpec this) {
+        return tableJson;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  List<String> getForeignKeyFields( ChildCollectionSpec this) {
+        return foreignKeyFields;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  CustomJoinCondition getCustomJoinCondition( ChildCollectionSpec this) {
+        return customJoinCondition;
+    }
+
+    public  Set<String> getForeignKeyFieldsSet( ChildCollectionSpec this) {
+        return applyIfPresent(foreignKeyFields, HashSet::new);
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  String getFilter() {
+        return filter;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  Boolean getUnwrap( ChildCollectionSpec this) {
+        return unwrap;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  String getOrderBy( ChildCollectionSpec this) {
+        return orderBy;
+    }
+}

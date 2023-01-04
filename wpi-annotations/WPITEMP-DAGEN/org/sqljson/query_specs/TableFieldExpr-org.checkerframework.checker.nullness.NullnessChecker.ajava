@@ -1,0 +1,118 @@
+package org.sqljson.query_specs;
+
+import java.io.IOException;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.node.JsonNodeType;
+
+// Allow deserializing from simple String as "field" property.
+@org.checkerframework.framework.qual.AnnotatedFor("org.checkerframework.checker.nullness.NullnessChecker")
+public final class TableFieldExpr {
+
+    private @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.MonotonicNonNull String field;
+
+    private @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.MonotonicNonNull String expression;
+
+    private @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.MonotonicNonNull String withTableAliasAs;
+
+    private @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.MonotonicNonNull String jsonProperty;
+
+    private @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.MonotonicNonNull String fieldTypeInGeneratedSource;
+
+    @org.checkerframework.dataflow.qual.SideEffectFree
+    private TableFieldExpr() {
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "#2" }, qualifier = org.checkerframework.checker.initialization.qual.FBCBottom.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.expression" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.field" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.fieldTypeInGeneratedSource" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.jsonProperty" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.withTableAliasAs" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    public TableFieldExpr(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable String field, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable String expression, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable String withTableAliasAs, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable String jsonProperty, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable String fieldTypeInGeneratedSource) {
+        this.field = field;
+        this.expression = expression;
+        this.withTableAliasAs = withTableAliasAs;
+        this.jsonProperty = jsonProperty;
+        this.fieldTypeInGeneratedSource = fieldTypeInGeneratedSource;
+        if ((field != null) == (expression != null))
+            throw new RuntimeException("Exactly one of database field name and value expression should be specified.");
+        if (withTableAliasAs != null && expression == null)
+            throw new RuntimeException("Cannot specify withTableAliasAs without expression value.");
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.expression" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.field" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.fieldTypeInGeneratedSource" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.jsonProperty" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.withTableAliasAs" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable String getField() {
+        return field;
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.expression" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.field" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.fieldTypeInGeneratedSource" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.jsonProperty" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.withTableAliasAs" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable String getExpression() {
+        return expression;
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.expression" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.field" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.fieldTypeInGeneratedSource" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.jsonProperty" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.withTableAliasAs" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable String getWithTableAliasAs() {
+        return withTableAliasAs;
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.expression" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.field" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.fieldTypeInGeneratedSource" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.jsonProperty" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.withTableAliasAs" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable String getJsonProperty() {
+        return jsonProperty;
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.expression" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.field" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.fieldTypeInGeneratedSource" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.jsonProperty" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.withTableAliasAs" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable String getFieldTypeInGeneratedSource() {
+        return fieldTypeInGeneratedSource;
+    }
+}
+
+/// Allow simple String to be deserialized to a TableFieldExpression with the value as the "field"
+/// property and other values null.
+@org.checkerframework.framework.qual.AnnotatedFor("org.checkerframework.checker.nullness.NullnessChecker")
+class TableFieldExprDeserializer extends JsonDeserializer<TableFieldExpr> {
+
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull TableFieldExpr deserialize(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull TableFieldExprDeserializer this, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull JsonParser jsonParser, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+        JsonNode node = jsonParser.readValueAs(JsonNode.class);
+        if (node.getNodeType() == JsonNodeType.STRING)
+            return new TableFieldExpr(node.textValue(), null, null, null, null);
+        else {
+            String field = node.has("field") ? node.get("field").textValue() : null;
+            String expr = node.has("expression") ? node.get("expression").textValue() : null;
+            String withTableAliasAs = node.has("withTableAliasAs") ? node.get("withTableAliasAs").textValue() : null;
+            String jsonProperty = node.has("jsonProperty") ? node.get("jsonProperty").textValue() : null;
+            String genFieldType = node.has("fieldTypeInGeneratedSource") ? node.get("fieldTypeInGeneratedSource").textValue() : null;
+            return new TableFieldExpr(field, expr, withTableAliasAs, jsonProperty, genFieldType);
+        }
+    }
+}

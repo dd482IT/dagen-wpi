@@ -1,0 +1,69 @@
+package org.sqljson.result_types;
+
+import java.util.Objects;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+@org.checkerframework.framework.qual.AnnotatedFor("org.checkerframework.checker.nullness.NullnessChecker")
+public class TableExpressionProperty {
+
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String name;
+
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.MonotonicNonNull String tableExpression;
+
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.MonotonicNonNull String specifiedSourceCodeFieldType;
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.specifiedSourceCodeFieldType" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.tableExpression" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    public TableExpressionProperty(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String name, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable String tableExpression, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable String specifiedSourceCodeFieldType) {
+        this.name = name;
+        this.tableExpression = tableExpression;
+        this.specifiedSourceCodeFieldType = specifiedSourceCodeFieldType;
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.specifiedSourceCodeFieldType" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.tableExpression" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String getName() {
+        return name;
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.specifiedSourceCodeFieldType" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.tableExpression" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable String getTableExpression() {
+        return tableExpression;
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.specifiedSourceCodeFieldType" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.tableExpression" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable String getSpecifiedSourceCodeFieldType() {
+        return specifiedSourceCodeFieldType;
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.specifiedSourceCodeFieldType" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.tableExpression" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    public  @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull boolean equals(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull TableExpressionProperty this, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        var that = (TableExpressionProperty) o;
+        return Objects.equals(tableExpression, that.tableExpression) && Objects.equals(name, that.name) && Objects.equals(specifiedSourceCodeFieldType, that.specifiedSourceCodeFieldType);
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.specifiedSourceCodeFieldType" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.tableExpression" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    public  @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull int hashCode(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull TableExpressionProperty this) {
+        return Objects.hash(tableExpression, name, specifiedSourceCodeFieldType);
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.specifiedSourceCodeFieldType" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.tableExpression" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String toString(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull TableExpressionProperty this) {
+        return "TableExpressionProperty{fieldExpression=" + tableExpression + ", name=" + name + ", specifiedSourceCodeFieldType=" + specifiedSourceCodeFieldType + '}';
+    }
+}

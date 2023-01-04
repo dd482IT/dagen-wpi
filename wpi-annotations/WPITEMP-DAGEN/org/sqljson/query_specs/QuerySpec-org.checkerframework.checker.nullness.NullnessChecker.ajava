@@ -1,0 +1,124 @@
+package org.sqljson.query_specs;
+
+import java.util.ArrayList;
+import java.util.List;
+import static java.util.Collections.*;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import static org.sqljson.util.Nullables.valueOr;
+import static org.sqljson.query_specs.ResultRepr.JSON_OBJECT_ROWS;
+
+@org.checkerframework.framework.qual.AnnotatedFor("org.checkerframework.checker.nullness.NullnessChecker")
+public final class QuerySpec {
+
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String queryName;
+
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull TableJsonSpec tableJson;
+
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<ResultRepr> resultRepresentations;
+
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull Boolean generateResultTypes;
+
+    // Contains at least the resource name for generated SQL, if not result types.
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull Boolean generateSource;
+
+    // inherited from query group spec if empty
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.MonotonicNonNull PropertyNameDefault propertyNameDefault;
+
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.MonotonicNonNull String orderBy;
+
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull Boolean forUpdate;
+
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.MonotonicNonNull String typesFileHeader;
+
+    private QuerySpec() {
+        this.queryName = "";
+        this.tableJson = new TableJsonSpec();
+        this.resultRepresentations = singletonList(JSON_OBJECT_ROWS);
+        this.generateResultTypes = true;
+        this.generateSource = true;
+        this.propertyNameDefault = null;
+        this.orderBy = null;
+        this.forUpdate = false;
+        this.typesFileHeader = null;
+    }
+
+    public QuerySpec(String queryName, TableJsonSpec tableJson, List<ResultRepr> resultRepresentations, Boolean generateResultTypes, Boolean generateSource, PropertyNameDefault propertyNameDefault, String orderBy, Boolean forUpdate, String typesFileHeader) {
+        this.queryName = queryName;
+        this.resultRepresentations = resultRepresentations != null ? unmodifiableList(new ArrayList<>(resultRepresentations)) : singletonList(JSON_OBJECT_ROWS);
+        this.generateResultTypes = generateResultTypes;
+        this.generateSource = generateSource;
+        this.propertyNameDefault = propertyNameDefault;
+        this.tableJson = tableJson;
+        this.orderBy = orderBy;
+        this.forUpdate = forUpdate;
+        this.typesFileHeader = typesFileHeader;
+        if (valueOr(generateResultTypes, true) && !valueOr(generateSource, true))
+            throw new RuntimeException("In query \"" + queryName + "", cannot generate result types without generateSource option enabled.");
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String getQueryName() {
+        return queryName;
+    }
+
+    /// Generates a SQL query for each of the specified result representations.
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<ResultRepr> getResultRepresentations() {
+        return resultRepresentations;
+    }
+
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<ResultRepr> getResultRepresentationsList() {
+        return resultRepresentations != null ? resultRepresentations : singletonList(JSON_OBJECT_ROWS);
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull Boolean getGenerateResultTypes() {
+        return generateResultTypes;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull boolean getGenerateResultTypesOrDefault() {
+        return generateResultTypes != null ? generateResultTypes : true;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull Boolean getGenerateSource() {
+        return generateSource;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull boolean getGenerateSourceOrDefault() {
+        return generateSource != null ? generateSource : true;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull PropertyNameDefault getPropertyNameDefault() {
+        return propertyNameDefault;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull TableJsonSpec getTableJson() {
+        return tableJson;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String getOrderBy() {
+        return orderBy;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull Boolean getForUpdate() {
+        return forUpdate;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull boolean getForUpdateOrDefault() {
+        return forUpdate != null ? forUpdate : false;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String getTypesFileHeader() {
+        return typesFileHeader;
+    }
+}

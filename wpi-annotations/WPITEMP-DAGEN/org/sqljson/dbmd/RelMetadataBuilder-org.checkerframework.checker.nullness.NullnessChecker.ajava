@@ -1,0 +1,34 @@
+package org.sqljson.dbmd;
+
+import java.util.ArrayList;
+import java.util.List;
+import static java.util.Objects.requireNonNull;
+
+@org.checkerframework.framework.qual.AnnotatedFor("org.checkerframework.checker.nullness.NullnessChecker")
+class RelMetadataBuilder {
+
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull RelId relId;
+
+    private final RelMetadata.@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull RelType relType;
+
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<Field> fields;
+
+    public RelMetadataBuilder(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull RelId relId, RelMetadata.@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull RelType relType) {
+        this.relId = requireNonNull(relId);
+        this.relType = requireNonNull(relType);
+        this.fields = new ArrayList<>();
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull RelId getRelId() {
+        return relId;
+    }
+
+    public void addField(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull Field f) {
+        fields.add(f);
+    }
+
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull RelMetadata build() {
+        return new RelMetadata(relId, relType, fields);
+    }
+}

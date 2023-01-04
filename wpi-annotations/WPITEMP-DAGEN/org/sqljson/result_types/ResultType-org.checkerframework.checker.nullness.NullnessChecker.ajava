@@ -1,0 +1,123 @@
+package org.sqljson.result_types;
+
+import java.util.*;
+import static java.util.Collections.unmodifiableList;
+import static java.util.stream.Collectors.toList;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+@org.checkerframework.framework.qual.AnnotatedFor("org.checkerframework.checker.nullness.NullnessChecker")
+public class ResultType {
+
+    // always unqualified by module/package
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String typeName;
+
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<SimpleTableFieldProperty> simpleTableFieldProperties;
+
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<TableExpressionProperty> tableExpressionProperties;
+
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<ChildCollectionProperty> childCollectionProperties;
+
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<ParentReferenceProperty> parentReferenceProperties;
+
+    // NOTE: Fields from inline parents are included in the above.
+    private final  @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull boolean unwrapped;
+
+    ResultType(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String typeName, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<SimpleTableFieldProperty> simpleTableFieldProperties, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<TableExpressionProperty> tableExpressionProperties, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<ChildCollectionProperty> childCollectionProperties, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<ParentReferenceProperty> parentReferenceProperties) {
+        this(typeName, simpleTableFieldProperties, tableExpressionProperties, childCollectionProperties, parentReferenceProperties, false);
+    }
+
+    ResultType(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String typeName, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<SimpleTableFieldProperty> simpleTableFieldProperties, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<TableExpressionProperty> tableExpressionProperties, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<ChildCollectionProperty> childCollectionProperties, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<ParentReferenceProperty> parentReferenceProperties,  @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull boolean unwrapped) {
+        this.typeName = typeName;
+        this.simpleTableFieldProperties = unmodifiableList(new ArrayList<>(simpleTableFieldProperties));
+        this.tableExpressionProperties = unmodifiableList(new ArrayList<>(tableExpressionProperties));
+        this.childCollectionProperties = unmodifiableList(new ArrayList<>(childCollectionProperties));
+        this.parentReferenceProperties = unmodifiableList(new ArrayList<>(parentReferenceProperties));
+        this.unwrapped = unwrapped;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String getTypeName() {
+        return typeName;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<SimpleTableFieldProperty> getSimpleTableFieldProperties() {
+        return simpleTableFieldProperties;
+    }
+
+    /// Get nullable variants of the database fields.
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<SimpleTableFieldProperty> getSimpleTableFieldPropertiesNullable() {
+        return simpleTableFieldProperties.stream().map(SimpleTableFieldProperty::toNullable).collect(toList());
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<TableExpressionProperty> getTableExpressionProperties() {
+        return tableExpressionProperties;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<ChildCollectionProperty> getChildCollectionProperties() {
+        return childCollectionProperties;
+    }
+
+    /// Get nullable variants of the child collection fields.
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<ChildCollectionProperty> getChildCollectionPropertiesNullable() {
+        return childCollectionProperties.stream().map(ChildCollectionProperty::toNullable).collect(toList());
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<ParentReferenceProperty> getParentReferenceProperties() {
+        return parentReferenceProperties;
+    }
+
+    /// Get nullable variants of the parent reference fields.
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<ParentReferenceProperty> getParentReferencePropertiesNullable() {
+        return parentReferenceProperties.stream().map(ParentReferenceProperty::toNullable).collect(toList());
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull boolean isUnwrapped() {
+        return unwrapped;
+    }
+
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull ResultType withUnwrapped( @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull boolean unwrap) {
+        if (unwrap == this.unwrapped)
+            return this;
+        else
+            return new ResultType(typeName, simpleTableFieldProperties, tableExpressionProperties, childCollectionProperties, parentReferenceProperties, unwrap);
+    }
+
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull ResultType withTypeName(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String newTypeName) {
+        return new ResultType(newTypeName, simpleTableFieldProperties, tableExpressionProperties, childCollectionProperties, parentReferenceProperties, unwrapped);
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull int getFieldsCount() {
+        return simpleTableFieldProperties.size() + tableExpressionProperties.size() + childCollectionProperties.size() + parentReferenceProperties.size();
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull boolean equalsIgnoringName(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull ResultType that) {
+        return simpleTableFieldProperties.equals(that.simpleTableFieldProperties) && tableExpressionProperties.equals(that.tableExpressionProperties) && childCollectionProperties.equals(that.childCollectionProperties) && parentReferenceProperties.equals(that.parentReferenceProperties) && unwrapped == that.unwrapped;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull boolean equals(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull ResultType this, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        ResultType that = (ResultType) o;
+        return typeName.equals(that.typeName) && simpleTableFieldProperties.equals(that.simpleTableFieldProperties) && tableExpressionProperties.equals(that.tableExpressionProperties) && childCollectionProperties.equals(that.childCollectionProperties) && parentReferenceProperties.equals(that.parentReferenceProperties) && unwrapped == that.unwrapped;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull int hashCode(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull ResultType this) {
+        return Objects.hash(typeName, simpleTableFieldProperties, tableExpressionProperties, childCollectionProperties, parentReferenceProperties, unwrapped);
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String toString(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull ResultType this) {
+        return "ResultType{typeName='" + typeName + '\'' + ", simpleTableFieldProperties=" + simpleTableFieldProperties + ", tableExpressionProperties=" + tableExpressionProperties + ", childCollectionProperties=" + childCollectionProperties + ", parentReferenceProperties=" + parentReferenceProperties + ", unwrapped=" + unwrapped + '}';
+    }
+}

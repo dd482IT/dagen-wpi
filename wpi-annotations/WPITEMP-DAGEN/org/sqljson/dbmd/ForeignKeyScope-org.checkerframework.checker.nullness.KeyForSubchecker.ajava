@@ -1,0 +1,7 @@
+package org.sqljson.dbmd;
+
+@org.checkerframework.framework.qual.AnnotatedFor("org.checkerframework.checker.nullness.KeyForSubchecker")
+public enum ForeignKeyScope {
+
+    REGISTERED_TABLES_ONLY, ALL_TABLES
+}

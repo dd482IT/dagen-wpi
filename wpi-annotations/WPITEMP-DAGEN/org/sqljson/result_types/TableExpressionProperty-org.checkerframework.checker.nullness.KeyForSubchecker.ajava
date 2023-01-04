@@ -1,0 +1,55 @@
+package org.sqljson.result_types;
+
+import java.util.Objects;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+@org.checkerframework.framework.qual.AnnotatedFor("org.checkerframework.checker.nullness.KeyForSubchecker")
+public class TableExpressionProperty {
+
+    private final  String name;
+
+    private final  String tableExpression;
+
+    private final  String specifiedSourceCodeFieldType;
+
+    public TableExpressionProperty( String name,  String tableExpression,  String specifiedSourceCodeFieldType) {
+        this.name = name;
+        this.tableExpression = tableExpression;
+        this.specifiedSourceCodeFieldType = specifiedSourceCodeFieldType;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  String getName( TableExpressionProperty this) {
+        return name;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  String getTableExpression( TableExpressionProperty this) {
+        return tableExpression;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  String getSpecifiedSourceCodeFieldType( TableExpressionProperty this) {
+        return specifiedSourceCodeFieldType;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public   boolean equals( TableExpressionProperty this,  Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        var that = (TableExpressionProperty) o;
+        return Objects.equals(tableExpression, that.tableExpression) && Objects.equals(name, that.name) && Objects.equals(specifiedSourceCodeFieldType, that.specifiedSourceCodeFieldType);
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public   int hashCode( TableExpressionProperty this) {
+        return Objects.hash(tableExpression, name, specifiedSourceCodeFieldType);
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  String toString( TableExpressionProperty this) {
+        return "TableExpressionProperty{fieldExpression=" + tableExpression + ", name=" + name + ", specifiedSourceCodeFieldType=" + specifiedSourceCodeFieldType + '}';
+    }
+}

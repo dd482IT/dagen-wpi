@@ -1,0 +1,28 @@
+package org.sqljson.util;
+
+import java.util.Properties;
+import static java.util.Objects.requireNonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+@org.checkerframework.framework.qual.AnnotatedFor("org.checkerframework.checker.nullness.KeyForSubchecker")
+public class Props {
+
+    // Get the property value for the first contained key if any.
+    @org.checkerframework.dataflow.qual.Pure
+    public static  String getProperty( Properties p,  String ... keys) {
+        for (String key : keys) {
+            if (p.containsKey(key))
+                return p.getProperty(key);
+        }
+        return null;
+    }
+
+    @org.checkerframework.dataflow.qual.SideEffectFree
+    public static  String requireProperty( Properties p,  String ... keys) {
+        return requireNonNull(getProperty(p, keys), "Property " + keys[0] + " is required.");
+    }
+
+    @org.checkerframework.dataflow.qual.SideEffectFree
+    private Props() {
+    }
+}

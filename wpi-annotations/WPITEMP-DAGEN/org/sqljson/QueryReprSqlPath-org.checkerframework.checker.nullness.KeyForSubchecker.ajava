@@ -1,0 +1,35 @@
+package org.sqljson;
+
+import java.nio.file.Path;
+import org.sqljson.query_specs.ResultRepr;
+
+@org.checkerframework.framework.qual.AnnotatedFor("org.checkerframework.checker.nullness.KeyForSubchecker")
+public class QueryReprSqlPath {
+
+    private final  String queryName;
+
+    private final  ResultRepr resultRepr;
+
+    private final  Path sqlPath;
+
+    public QueryReprSqlPath( String queryName,  ResultRepr resultRepr,  Path sqlPath) {
+        this.queryName = queryName;
+        this.resultRepr = resultRepr;
+        this.sqlPath = sqlPath;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  String getQueryName() {
+        return queryName;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  ResultRepr getResultRepr() {
+        return resultRepr;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  Path getSqlPath() {
+        return sqlPath;
+    }
+}

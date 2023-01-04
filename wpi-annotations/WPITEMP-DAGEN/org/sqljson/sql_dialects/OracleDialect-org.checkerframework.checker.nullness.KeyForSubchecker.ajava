@@ -1,0 +1,31 @@
+package org.sqljson.sql_dialects;
+
+import java.util.List;
+import static java.util.stream.Collectors.joining;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import static org.sqljson.util.StringFuns.*;
+
+@org.checkerframework.framework.qual.AnnotatedFor("org.checkerframework.checker.nullness.KeyForSubchecker")
+public class OracleDialect implements SqlDialect {
+
+    private final   int indentSpaces;
+
+    public OracleDialect(  int indentSpaces) {
+        this.indentSpaces = indentSpaces;
+    }
+
+    public  String getRowObjectExpression( OracleDialect this,  List<String> columnNames,  String fromAlias) {
+        String objectFieldDecls = columnNames.stream().map(colName -> "'" + unDoubleQuote(colName) + "' value " + fromAlias + "." + colName).collect(joining(",\n"));
+        return "json_object(\n" + indentLines(objectFieldDecls, indentSpaces) + "\n  returning clob\n)";
+    }
+
+    @org.checkerframework.dataflow.qual.SideEffectFree
+    public  String getAggregatedRowObjectsExpression( OracleDialect this,  List<String> columnNames,  String orderBy,  String fromAlias) {
+        return "treat(coalesce(json_arrayagg(" + getRowObjectExpression(columnNames, fromAlias) + (orderBy != null ? " order by " + orderBy.replace("$$", fromAlias) : "") + " returning clob), to_clob('[]')) as json)";
+    }
+
+    @org.checkerframework.dataflow.qual.SideEffectFree
+    public  String getAggregatedColumnValuesExpression( OracleDialect this,  String columnName,  String orderBy,  String fromAlias) {
+        return "treat(coalesce(json_arrayagg(" + fromAlias + "." + columnName + (orderBy != null ? " order by " + orderBy.replace("$$", fromAlias) : "") + " returning clob), to_clob('[]')) as json)";
+    }
+}

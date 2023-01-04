@@ -1,0 +1,57 @@
+package org.sqljson.query_specs;
+
+import java.util.ArrayList;
+import java.util.List;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableList;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import static org.sqljson.query_specs.PropertyNameDefault.CAMELCASE;
+
+@org.checkerframework.framework.qual.AnnotatedFor("org.checkerframework.checker.nullness.NullnessChecker")
+public final class QueryGroupSpec {
+
+    private @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.MonotonicNonNull String defaultSchema = null;
+
+    private @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull PropertyNameDefault propertyNameDefault = CAMELCASE;
+
+    private @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<String> generateUnqualifiedNamesForSchemas = emptyList();
+
+    private @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<QuerySpec> querySpecs = emptyList();
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.SideEffectFree
+    private QueryGroupSpec() {
+    }
+
+    @org.checkerframework.checker.nullness.qual.EnsuresNonNull({ "this.defaultSchema" })
+    public QueryGroupSpec(String defaultSchema, PropertyNameDefault propertyNameDefault, List<String> generateUnqualifiedNamesForSchemas, List<QuerySpec> querySpecs) {
+        this.defaultSchema = defaultSchema;
+        this.propertyNameDefault = propertyNameDefault;
+        this.generateUnqualifiedNamesForSchemas = generateUnqualifiedNamesForSchemas;
+        this.querySpecs = unmodifiableList(new ArrayList<>(querySpecs));
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable String getDefaultSchema() {
+        return defaultSchema;
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull PropertyNameDefault getPropertyNameDefault() {
+        return propertyNameDefault;
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<String> getGenerateUnqualifiedNamesForSchemas() {
+        return generateUnqualifiedNamesForSchemas;
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<QuerySpec> getQuerySpecs() {
+        return querySpecs;
+    }
+}

@@ -1,0 +1,40 @@
+package org.sqljson.dbmd;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.sqljson.util.StringFuns;
+
+@org.checkerframework.framework.qual.AnnotatedFor("org.checkerframework.checker.nullness.NullnessChecker")
+class ForeignKeyBuilder {
+
+    private @org.checkerframework.checker.initialization.qual.FBCBottom @org.checkerframework.checker.nullness.qual.MonotonicNonNull String constraintName;
+
+    private @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull RelId srcRel;
+
+    private @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull RelId tgtRel;
+
+    private @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<ForeignKey.Component> comps;
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.constraintName" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    public ForeignKeyBuilder(@org.checkerframework.checker.initialization.qual.FBCBottom @org.checkerframework.checker.nullness.qual.Nullable String constraintName, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull RelId srcRel, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull RelId tgtRel) {
+        this.constraintName = constraintName;
+        this.srcRel = srcRel;
+        this.tgtRel = tgtRel;
+        this.comps = new ArrayList<>();
+    }
+
+     @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull boolean neitherRelMatches(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable Pattern relIdsPattern) {
+        return !(StringFuns.matches(relIdsPattern, srcRel.getIdString()) || StringFuns.matches(relIdsPattern, tgtRel.getIdString()));
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.constraintName" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull ForeignKey build() {
+        return new ForeignKey(constraintName, srcRel, tgtRel, comps);
+    }
+
+    void addComponent(ForeignKey.@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull Component comp) {
+        comps.add(comp);
+    }
+}

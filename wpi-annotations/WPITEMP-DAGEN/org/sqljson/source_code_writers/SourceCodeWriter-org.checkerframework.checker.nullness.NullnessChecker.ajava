@@ -1,0 +1,14 @@
+package org.sqljson.source_code_writers;
+
+import java.io.IOException;
+import java.util.List;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.sqljson.QueryReprSqlPath;
+import org.sqljson.result_types.ResultType;
+
+@org.checkerframework.framework.qual.AnnotatedFor("org.checkerframework.checker.nullness.NullnessChecker")
+public interface SourceCodeWriter {
+
+    @org.checkerframework.dataflow.qual.Pure
+    void writeQuerySourceCode(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String queryName, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<ResultType> resultTypes, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<String> paramNames, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<QueryReprSqlPath> sqlPaths, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String queryFileHeader,  @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull boolean includeTimestamp) throws IOException;
+}

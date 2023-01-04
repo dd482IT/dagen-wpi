@@ -1,0 +1,64 @@
+package org.sqljson.query_specs;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import static org.sqljson.util.Nullables.applyIfPresent;
+
+@org.checkerframework.framework.qual.AnnotatedFor("org.checkerframework.checker.nullness.KeyForSubchecker")
+public final class ParentSpec {
+
+    private final  TableJsonSpec tableJson;
+
+    private final  String referenceName;
+
+    private final  List<String> viaForeignKeyFields;
+
+    private final  CustomJoinCondition customJoinCondition;
+
+    private ParentSpec() {
+        this(new TableJsonSpec(), null, null, null);
+    }
+
+    public ParentSpec(TableJsonSpec tableJson, String referenceName, List<String> viaForeignKeyFields) {
+        this(tableJson, referenceName, viaForeignKeyFields, null);
+    }
+
+    public ParentSpec( TableJsonSpec tableJson,  String referenceName,  List<String> viaForeignKeyFields, CustomJoinCondition customJoinCondition) {
+        this.tableJson = tableJson;
+        this.referenceName = referenceName;
+        this.viaForeignKeyFields = viaForeignKeyFields;
+        this.customJoinCondition = customJoinCondition;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  TableJsonSpec getTableJson( ParentSpec this) {
+        return getParentTableJsonSpec();
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  String getReferenceName( ParentSpec this) {
+        return referenceName;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  List<String> getViaForeignKeyFields() {
+        return viaForeignKeyFields;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  CustomJoinCondition getCustomJoinCondition( ParentSpec this) {
+        return customJoinCondition;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  TableJsonSpec getParentTableJsonSpec( ParentSpec this) {
+        return tableJson;
+    }
+
+    public  Set<String> getChildForeignKeyFieldsSet( ParentSpec this) {
+        return applyIfPresent(viaForeignKeyFields, HashSet::new);
+    }
+}

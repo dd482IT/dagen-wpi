@@ -1,0 +1,48 @@
+package org.sqljson.sql_dialects;
+
+import java.util.List;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.sqljson.dbmd.DatabaseMetadata;
+
+@org.checkerframework.framework.qual.AnnotatedFor("org.checkerframework.checker.nullness.KeyForSubchecker")
+public interface SqlDialect {
+
+    enum DbmsType {
+
+        PG, ORA, ISO
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+     String getRowObjectExpression( SqlDialect this,  List<String> columnNames,  String fromAlias);
+
+    /// Select expression part of a simple aggregate objects query. This expression should be an aggregate function
+    /// which builds an array of json objects from a source relation having the given column names and table alias.
+    @org.checkerframework.dataflow.qual.Pure
+     String getAggregatedRowObjectsExpression( SqlDialect this,  List<String> columnNames,  String orderBy,  String fromAlias);
+
+    @org.checkerframework.dataflow.qual.Pure
+     String getAggregatedColumnValuesExpression( SqlDialect this,  String columnName,  String orderBy,  String fromAlias);
+
+    static  SqlDialect fromDatabaseMetadata( DatabaseMetadata dbmd,   int indentSpaces) {
+        DbmsType dbmsType = getDbmsType(dbmd.getDbmsName());
+        switch(dbmsType) {
+            case PG:
+                return new PostgresDialect(indentSpaces);
+            case ORA:
+                return new OracleDialect(indentSpaces);
+            default:
+                throw new RuntimeException("dbms type " + dbmsType + " is currently not supported");
+        }
+    }
+
+    @org.checkerframework.dataflow.qual.SideEffectFree
+    static  DbmsType getDbmsType( String dbmsName) {
+        String dbmsLower = dbmsName.toLowerCase();
+        if (dbmsLower.contains("postgres"))
+            return DbmsType.PG;
+        else if (dbmsLower.contains("oracle"))
+            return DbmsType.ORA;
+        else
+            return DbmsType.ISO;
+    }
+}

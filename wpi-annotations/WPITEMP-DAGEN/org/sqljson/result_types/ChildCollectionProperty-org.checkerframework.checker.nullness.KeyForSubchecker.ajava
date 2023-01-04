@@ -1,0 +1,62 @@
+package org.sqljson.result_types;
+
+import java.util.Objects;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+@org.checkerframework.framework.qual.AnnotatedFor("org.checkerframework.checker.nullness.KeyForSubchecker")
+public class ChildCollectionProperty {
+
+     String name;
+
+     ResultType resultType;
+
+      boolean nullable;
+
+    public ChildCollectionProperty( String name,  ResultType resultType,   boolean nullable) {
+        this.name = name;
+        this.resultType = resultType;
+        this.nullable = nullable;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  String getName( ChildCollectionProperty this) {
+        return name;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  ResultType getGeneratedType( ChildCollectionProperty this) {
+        return resultType;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public   boolean isNullable( ChildCollectionProperty this) {
+        return nullable;
+    }
+
+    public  ChildCollectionProperty toNullable() {
+        if (nullable)
+            return this;
+        else
+            return new ChildCollectionProperty(name, resultType, true);
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public   boolean equals( ChildCollectionProperty this,  Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        var that = (ChildCollectionProperty) o;
+        return nullable == that.nullable && name.equals(that.name) && resultType.equals(that.resultType);
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public   int hashCode( ChildCollectionProperty this) {
+        return Objects.hash(name, resultType, nullable);
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  String toString( ChildCollectionProperty this) {
+        return "ChildCollectionProperty{name='" + name + '\'' + ", resultType=" + resultType + ", nullable=" + nullable + '}';
+    }
+}

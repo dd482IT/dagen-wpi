@@ -1,0 +1,97 @@
+package org.sqljson.dbmd.source_writers;
+
+import java.io.StringWriter;
+import java.util.*;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.time.Instant;
+import static java.util.stream.Collectors.groupingBy;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.sqljson.dbmd.DatabaseMetadata;
+import org.sqljson.dbmd.Field;
+import org.sqljson.dbmd.RelId;
+import org.sqljson.dbmd.RelMetadata;
+import static org.sqljson.util.IO.newFileOrStdoutWriter;
+import static org.sqljson.util.Nullables.*;
+import static org.sqljson.util.StringFuns.indentLines;
+
+@org.checkerframework.framework.qual.AnnotatedFor("org.checkerframework.checker.nullness.KeyForSubchecker")
+public class TypeScriptWriter implements SourceCodeWriter {
+
+    private final  Path srcOutputDir;
+
+    public TypeScriptWriter( Path srcOutputDir) {
+        this.srcOutputDir = srcOutputDir;
+    }
+
+    private void writeCommonSourceFileHeader( TypeScriptWriter this,  BufferedWriter bw,   boolean includeTimestamp) throws IOException {
+        bw.write("// ---------------------------------------------------------------------------\n");
+        bw.write("// [ THIS SOURCE CODE WAS AUTO-GENERATED, ANY CHANGES MADE HERE MAY BE LOST. ]\n");
+        if (includeTimestamp)
+            bw.write("//   " + Instant.now().toString().replace('T', ' ') + "\n");
+        bw.write("// ---------------------------------------------------------------------------\n");
+    }
+
+    public void writeRelationDefinitions( TypeScriptWriter this,  DatabaseMetadata dbmd,   boolean includeTimestamp) throws IOException {
+        Path outputPath = getOutputFilePath();
+        BufferedWriter bw = newFileOrStdoutWriter(outputPath);
+        try {
+            writeCommonSourceFileHeader(bw, includeTimestamp);
+            writeRelationsModule(bw, dbmd);
+        } finally {
+            if (outputPath != null)
+                bw.close();
+            else
+                bw.flush();
+        }
+    }
+
+    private void writeRelationsModule( TypeScriptWriter this,  BufferedWriter bw,  DatabaseMetadata dbmd) throws IOException {
+        Map<String, List<RelMetadata>> relMdsBySchema = dbmd.getRelationMetadatas().stream().collect(groupingBy(rmd -> valueOr(rmd.getRelationId().getSchema(), "DEFAULT")));
+        for (String schema : relMdsBySchema.keySet()) {
+            bw.write("export const " + schema + " = {\n");
+            for (RelMetadata relMd : relMdsBySchema.get(schema)) {
+                bw.write(indentLines(getRelationMetadataSource(relMd), 3));
+                bw.write("\n");
+            }
+            // close schema object
+            bw.write("};\n");
+        }
+    }
+
+    private  String getRelationMetadataSource( TypeScriptWriter this,  RelMetadata relMd) {
+        StringWriter sw = new StringWriter();
+        RelId relId = relMd.getRelationId();
+        sw.write("\"" + relId.getName() + "\": {\n");
+        for (Field f : relMd.getFields()) {
+            sw.write("   " + lit(f.getName()) + ": {");
+            sw.write("\"type\": ");
+            sw.write(lit(f.getDatabaseType()) + ", ");
+            sw.write("\"len\": ");
+            sw.write(f.getLength() + ", ");
+            sw.write("\"prec\":");
+            sw.write(f.getPrecision() + ", ");
+            sw.write("\"scale\": ");
+            sw.write(f.getFractionalDigits() + ", ");
+            sw.write("\"null\": ");
+            sw.write(f.getNullable() + ", ");
+            sw.write("\"pkPart\": ");
+            Integer pkPartNum = f.getPrimaryKeyPartNumber();
+            sw.write(pkPartNum != null ? pkPartNum.toString() : "null");
+            sw.write("},\n");
+        }
+        // close relation object
+        sw.write("},\n");
+        return sw.toString();
+    }
+
+    private  Path getOutputFilePath( TypeScriptWriter this) {
+        return applyIfPresent(srcOutputDir, d -> d.resolve("relations.ts"));
+    }
+
+    @org.checkerframework.dataflow.qual.SideEffectFree
+    private static  String lit( String s) {
+        return "\"" + s.replace("\"", "\\\"") + "\"";
+    }
+}

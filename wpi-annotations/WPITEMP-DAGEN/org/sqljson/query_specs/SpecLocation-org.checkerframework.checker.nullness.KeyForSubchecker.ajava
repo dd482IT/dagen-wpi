@@ -1,0 +1,38 @@
+package org.sqljson.query_specs;
+
+@org.checkerframework.framework.qual.AnnotatedFor("org.checkerframework.checker.nullness.KeyForSubchecker")
+public class SpecLocation {
+
+    private final  String queryName;
+
+    private final  String queryPart;
+
+    public SpecLocation( String queryName) {
+        this.queryName = queryName;
+        this.queryPart = "";
+    }
+
+    public SpecLocation( String queryName,  String queryPart) {
+        this.queryName = queryName;
+        this.queryPart = queryPart;
+    }
+
+    public  SpecLocation addPart( SpecLocation this,  String additionalPart) {
+        return new SpecLocation(queryName, joinPartDescriptions(queryPart, additionalPart));
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  String getQueryName( SpecLocation this) {
+        return queryName;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  String getQueryPart( SpecLocation this) {
+        return queryPart;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    private static  String joinPartDescriptions( String part1,  String part2) {
+        return part1.isEmpty() ? part2 : part1 + " / " + part2;
+    }
+}

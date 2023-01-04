@@ -1,0 +1,90 @@
+package org.sqljson.query_specs;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import static org.sqljson.util.Nullables.applyIfPresent;
+
+@org.checkerframework.framework.qual.AnnotatedFor("org.checkerframework.checker.nullness.NullnessChecker")
+public final class ParentSpec {
+
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull TableJsonSpec tableJson;
+
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.MonotonicNonNull String referenceName;
+
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.MonotonicNonNull List<String> viaForeignKeyFields;
+
+    private final @org.checkerframework.checker.initialization.qual.FBCBottom @org.checkerframework.checker.nullness.qual.MonotonicNonNull CustomJoinCondition customJoinCondition;
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.customJoinCondition" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    private ParentSpec() {
+        this(new TableJsonSpec(), null, null, null);
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.customJoinCondition" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    public ParentSpec(TableJsonSpec tableJson, String referenceName, List<String> viaForeignKeyFields) {
+        this(tableJson, referenceName, viaForeignKeyFields, null);
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.customJoinCondition" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.referenceName" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.viaForeignKeyFields" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    public ParentSpec(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull TableJsonSpec tableJson, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable String referenceName, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable List<String> viaForeignKeyFields, @org.checkerframework.checker.initialization.qual.FBCBottom @org.checkerframework.checker.nullness.qual.Nullable CustomJoinCondition customJoinCondition) {
+        this.tableJson = tableJson;
+        this.referenceName = referenceName;
+        this.viaForeignKeyFields = viaForeignKeyFields;
+        this.customJoinCondition = customJoinCondition;
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.customJoinCondition" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.referenceName" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.viaForeignKeyFields" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull TableJsonSpec getTableJson() {
+        return getParentTableJsonSpec();
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.customJoinCondition" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.referenceName" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.viaForeignKeyFields" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable String getReferenceName() {
+        return referenceName;
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.customJoinCondition" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.referenceName" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.viaForeignKeyFields" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable List<String> getViaForeignKeyFields() {
+        return viaForeignKeyFields;
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.customJoinCondition" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.referenceName" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.viaForeignKeyFields" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.FBCBottom @org.checkerframework.checker.nullness.qual.Nullable CustomJoinCondition getCustomJoinCondition() {
+        return customJoinCondition;
+    }
+
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.customJoinCondition" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.referenceName" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.viaForeignKeyFields" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.customJoinCondition" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.referenceName" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.viaForeignKeyFields" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull TableJsonSpec getParentTableJsonSpec() {
+        return tableJson;
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.customJoinCondition" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.referenceName" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.viaForeignKeyFields" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable Set<String> getChildForeignKeyFieldsSet() {
+        return applyIfPresent(viaForeignKeyFields, HashSet::new);
+    }
+}
