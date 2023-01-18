@@ -13,7 +13,7 @@
       <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
       <jackson.version>2.14.0-rc1</jackson.version>
       <pg.version>42.4.3</pg.version>
-      <checkerFrameworkVersion>3.28.1-SNAPSHOT</checkerFrameworkVersion>
+      <checkerFrameworkVersion>3.29.1-SNAPSHOT</checkerFrameworkVersion>
    </properties>
 
    <dependencies>
