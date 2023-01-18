@@ -1,0 +1,60 @@
+package org.sqljson.query_specs;
+
+import java.util.Collections;
+import java.util.List;
+
+@org.checkerframework.framework.qual.AnnotatedFor("org.checkerframework.checker.nullness.KeyForSubchecker")
+public class CustomJoinCondition {
+
+    private final  List<FieldPair> equatedFields;
+
+    private CustomJoinCondition() {
+        equatedFields = Collections.emptyList();
+    }
+
+    public CustomJoinCondition(List<FieldPair> equatedFields) {
+        this.equatedFields = equatedFields;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  List<FieldPair> getEquatedFields( CustomJoinCondition this) {
+        return equatedFields;
+    }
+
+    public static class FieldPair {
+
+        private final  String childField;
+
+        private final  String parentPrimaryKeyField;
+
+        public FieldPair(String childField, String parentPrimaryKeyField) {
+            this.childField = childField;
+            this.parentPrimaryKeyField = parentPrimaryKeyField;
+        }
+
+        private FieldPair() {
+            this.childField = "";
+            this.parentPrimaryKeyField = "";
+        }
+
+        @org.checkerframework.dataflow.qual.Pure
+        public  String getChildField( FieldPair this) {
+            return childField;
+        }
+
+        @org.checkerframework.dataflow.qual.Pure
+        public  String getParentPrimaryKeyField( FieldPair this) {
+            return parentPrimaryKeyField;
+        }
+
+        @org.checkerframework.dataflow.qual.Pure
+        public  String toString( FieldPair this) {
+            return "FieldPair{childField='" + childField + '\'' + ", parentPrimaryKeyField='" + parentPrimaryKeyField + '\'' + '}';
+        }
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  String toString( CustomJoinCondition this) {
+        return "CustomJoinCondition{equatedFields=" + equatedFields + '}';
+    }
+}

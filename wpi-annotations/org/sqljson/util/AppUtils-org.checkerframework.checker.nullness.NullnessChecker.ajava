@@ -1,0 +1,38 @@
+package org.sqljson.util;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import static java.util.Collections.unmodifiableList;
+
+@org.checkerframework.framework.qual.AnnotatedFor("org.checkerframework.checker.nullness.NullnessChecker")
+public class AppUtils {
+
+    public static void throwError(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String message) {
+        System.err.println(message);
+        throw new RuntimeException(message);
+    }
+
+    public static @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull SplitArgs splitOptionsAndRequiredArgs(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull [] args) {
+        List<String> optArgs = new ArrayList<>();
+        for (String arg : args) if (arg.startsWith("-"))
+            optArgs.add(arg);
+        return new SplitArgs(optArgs, Arrays.asList(Arrays.copyOfRange(args, optArgs.size(), args.length)));
+    }
+
+    public static class SplitArgs {
+
+        public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<String> optional;
+
+        public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<String> required;
+
+        SplitArgs(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<String> optional, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<String> required) {
+            this.optional = unmodifiableList(new ArrayList<>(optional));
+            this.required = unmodifiableList(new ArrayList<>(required));
+        }
+    }
+
+    @org.checkerframework.dataflow.qual.SideEffectFree
+    private AppUtils() {
+    }
+}

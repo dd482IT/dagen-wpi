@@ -1,0 +1,34 @@
+package org.sqljson.dbmd;
+
+import java.util.ArrayList;
+import java.util.List;
+import static java.util.Objects.requireNonNull;
+
+@org.checkerframework.framework.qual.AnnotatedFor("org.checkerframework.checker.nullness.KeyForSubchecker")
+class RelMetadataBuilder {
+
+    private final  RelId relId;
+
+    private final RelMetadata. RelType relType;
+
+    private final  List<Field> fields;
+
+    public RelMetadataBuilder( RelId relId, RelMetadata. RelType relType) {
+        this.relId = requireNonNull(relId);
+        this.relType = requireNonNull(relType);
+        this.fields = new ArrayList<>();
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  RelId getRelId( RelMetadataBuilder this) {
+        return relId;
+    }
+
+    public void addField( RelMetadataBuilder this,  Field f) {
+        fields.add(f);
+    }
+
+    public  RelMetadata build( RelMetadataBuilder this) {
+        return new RelMetadata(relId, relType, fields);
+    }
+}

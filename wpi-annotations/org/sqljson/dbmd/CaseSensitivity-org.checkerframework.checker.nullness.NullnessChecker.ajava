@@ -1,0 +1,7 @@
+package org.sqljson.dbmd;
+
+@org.checkerframework.framework.qual.AnnotatedFor("org.checkerframework.checker.nullness.NullnessChecker")
+public enum CaseSensitivity {
+
+    INSENSITIVE_STORED_LOWER, INSENSITIVE_STORED_UPPER, INSENSITIVE_STORED_MIXED, SENSITIVE
+}

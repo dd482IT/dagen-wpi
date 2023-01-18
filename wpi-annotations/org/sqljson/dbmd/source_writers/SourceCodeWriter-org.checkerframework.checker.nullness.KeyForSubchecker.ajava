@@ -1,0 +1,11 @@
+package org.sqljson.dbmd.source_writers;
+
+import java.io.IOException;
+import org.sqljson.dbmd.DatabaseMetadata;
+
+@org.checkerframework.framework.qual.AnnotatedFor("org.checkerframework.checker.nullness.KeyForSubchecker")
+public interface SourceCodeWriter {
+
+    @org.checkerframework.dataflow.qual.Pure
+    void writeRelationDefinitions( SourceCodeWriter this,  DatabaseMetadata dbmd,   boolean includeTimestamp) throws IOException;
+}

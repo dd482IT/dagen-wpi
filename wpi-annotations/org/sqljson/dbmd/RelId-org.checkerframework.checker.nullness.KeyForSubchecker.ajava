@@ -1,0 +1,60 @@
+package org.sqljson.dbmd;
+
+import java.util.Objects;
+import static java.util.Objects.requireNonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+@org.checkerframework.framework.qual.AnnotatedFor("org.checkerframework.checker.nullness.KeyForSubchecker")
+public final class RelId {
+
+    static  RelId DUMMY_INSTANCE = new RelId();
+
+    private  String schema;
+
+    private  String name;
+
+    public RelId( String schema,  String name) {
+        this.schema = schema;
+        this.name = requireNonNull(name);
+    }
+
+    RelId() {
+        this.name = "";
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  String getSchema( RelId this) {
+        return schema;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  String getName( RelId this) {
+        return name;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  String toString( RelId this) {
+        return getIdString();
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  String getIdString( RelId this) {
+        return (schema != null ? schema + "." : "") + name;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public   boolean equals( RelId this,  Object other) {
+        if (!(other instanceof RelId))
+            return false;
+        else {
+            RelId o = (RelId) other;
+            return Objects.equals(schema, o.schema) && Objects.equals(name, o.name);
+        }
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public   int hashCode( RelId this) {
+        return (schema != null ? schema.hashCode() : 0) + 7 * name.hashCode();
+    }
+}

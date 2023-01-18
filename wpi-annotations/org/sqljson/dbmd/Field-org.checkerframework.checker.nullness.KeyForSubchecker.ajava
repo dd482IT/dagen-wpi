@@ -1,0 +1,131 @@
+package org.sqljson.dbmd;
+
+import java.sql.Types;
+import static java.util.Objects.requireNonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
+@org.checkerframework.framework.qual.AnnotatedFor("org.checkerframework.checker.nullness.KeyForSubchecker")
+public class Field {
+
+    private  String name;
+
+    private   int jdbcTypeCode;
+
+    private  String databaseType;
+
+    private  Integer length;
+
+    private  Integer precision;
+
+    private  Integer precisionRadix;
+
+    private  Integer fractionalDigits;
+
+    private  Boolean nullable;
+
+    private  Integer primaryKeyPartNumber;
+
+    public Field( String name,   int jdbcTypeCode,  String databaseType,  Integer length,  Integer precision,  Integer precisionRadix,  Integer fractionalDigits,  Boolean nullable,  Integer primaryKeyPartNumber) {
+        this.name = requireNonNull(name);
+        this.jdbcTypeCode = jdbcTypeCode;
+        this.databaseType = requireNonNull(databaseType);
+        this.length = length;
+        this.precision = precision;
+        this.precisionRadix = precisionRadix;
+        this.fractionalDigits = fractionalDigits;
+        this.nullable = nullable;
+        this.primaryKeyPartNumber = primaryKeyPartNumber;
+    }
+
+    Field() {
+        this.name = "";
+        this.databaseType = "";
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  String getName( Field this) {
+        return name;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public   int getJdbcTypeCode( Field this) {
+        return jdbcTypeCode;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  String getDatabaseType( Field this) {
+        return databaseType;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  Integer getLength( Field this) {
+        return length;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  Integer getFractionalDigits( Field this) {
+        return fractionalDigits;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  Integer getPrecision( Field this) {
+        return precision;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  Integer getPrecisionRadix() {
+        return precisionRadix;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  Boolean getNullable( Field this) {
+        return nullable;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  Integer getPrimaryKeyPartNumber( Field this) {
+        return primaryKeyPartNumber;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public   boolean isNumericType() {
+        return isJdbcTypeNumeric(jdbcTypeCode);
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public   boolean isCharacterType() {
+        return isJdbcTypeChar(jdbcTypeCode);
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public static   boolean isJdbcTypeNumeric(  int jdbcType) {
+        switch(jdbcType) {
+            case Types.TINYINT:
+            case Types.SMALLINT:
+            case Types.INTEGER:
+            case Types.BIGINT:
+            case Types.FLOAT:
+            case Types.REAL:
+            case Types.DOUBLE:
+            case Types.DECIMAL:
+            case Types.NUMERIC:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public static   boolean isJdbcTypeChar(  int jdbcType) {
+        switch(jdbcType) {
+            case Types.CHAR:
+            case Types.VARCHAR:
+            case Types.LONGVARCHAR:
+                return true;
+            default:
+                return false;
+        }
+    }
+}

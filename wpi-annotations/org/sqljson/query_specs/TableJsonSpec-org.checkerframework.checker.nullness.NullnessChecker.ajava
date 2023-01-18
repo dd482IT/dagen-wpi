@@ -1,0 +1,148 @@
+package org.sqljson.query_specs;
+
+import java.util.*;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableList;
+import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+@org.checkerframework.framework.qual.AnnotatedFor("org.checkerframework.checker.nullness.NullnessChecker")
+public final class TableJsonSpec {
+
+    // possibly qualified
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String table;
+
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.MonotonicNonNull List<TableFieldExpr> fieldExpressions;
+
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.MonotonicNonNull List<ParentSpec> parentTables;
+
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.MonotonicNonNull List<ChildCollectionSpec> childTableCollections;
+
+    private @org.checkerframework.checker.initialization.qual.FBCBottom @org.checkerframework.checker.nullness.qual.MonotonicNonNull RecordCondition recordCondition = null;
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.childTableCollections" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    TableJsonSpec() {
+        this("", null, null, null, null);
+    }
+
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.recordCondition" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.childTableCollections" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.fieldExpressions" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.parentTables" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.recordCondition" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    public TableJsonSpec(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String table, @org.checkerframework.checker.initialization.qual.FBCBottom @org.checkerframework.checker.nullness.qual.Nullable List<TableFieldExpr> fieldExpressions, @org.checkerframework.checker.initialization.qual.FBCBottom @org.checkerframework.checker.nullness.qual.Nullable List<ParentSpec> parentTables, @org.checkerframework.checker.initialization.qual.FBCBottom @org.checkerframework.checker.nullness.qual.Nullable List<ChildCollectionSpec> childTableCollections, @org.checkerframework.checker.initialization.qual.FBCBottom @org.checkerframework.checker.nullness.qual.Nullable RecordCondition recordCondition) {
+        requireNonNull(table);
+        this.table = table;
+        this.fieldExpressions = fieldExpressions != null ? unmodifiableList(fieldExpressions) : null;
+        this.parentTables = parentTables != null ? unmodifiableList(new ArrayList<>(parentTables)) : null;
+        this.childTableCollections = childTableCollections != null ? unmodifiableList(new ArrayList<>(childTableCollections)) : null;
+        this.recordCondition = recordCondition;
+    }
+
+    /// The table name, possibly schema-qualified, of this output specification.
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.childTableCollections" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.fieldExpressions" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.parentTables" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.recordCondition" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String getTable() {
+        return table;
+    }
+
+    /// The output fields which originate from fields of this table.
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.childTableCollections" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.fieldExpressions" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.parentTables" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.recordCondition" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable List<TableFieldExpr> getFieldExpressions() {
+        return fieldExpressions;
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.childTableCollections" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.fieldExpressions" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.parentTables" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.recordCondition" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable List<ParentSpec> getParentTables() {
+        return parentTables;
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.childTableCollections" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.fieldExpressions" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.parentTables" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.recordCondition" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable List<ChildCollectionSpec> getChildTableCollections() {
+        return childTableCollections;
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.childTableCollections" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.fieldExpressions" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.parentTables" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.recordCondition" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.FBCBottom @org.checkerframework.checker.nullness.qual.Nullable RecordCondition getRecordCondition() {
+        return recordCondition;
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.childTableCollections" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.fieldExpressions" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.parentTables" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<TableFieldExpr> getFieldExpressionsList() {
+        return fieldExpressions != null ? fieldExpressions : emptyList();
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.childTableCollections" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.fieldExpressions" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.parentTables" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<ParentSpec> getParentTablesList() {
+        return parentTables != null ? parentTables : emptyList();
+    }
+
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.childTableCollections" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.fieldExpressions" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.parentTables" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.recordCondition" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.childTableCollections" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.fieldExpressions" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.parentTables" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<ParentSpec> getReferencedParentTablesList() {
+        return parentTables != null ? parentTables.stream().filter(t -> t.getReferenceName() != null).collect(toList()) : emptyList();
+    }
+
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.childTableCollections" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.fieldExpressions" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.parentTables" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.childTableCollections" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.fieldExpressions" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.parentTables" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<ParentSpec> getInlineParentTablesList() {
+        return parentTables != null ? parentTables.stream().filter(t -> t.getReferenceName() == null).collect(toList()) : emptyList();
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.childTableCollections" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.fieldExpressions" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.parentTables" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<ChildCollectionSpec> getChildTableCollectionsList() {
+        return childTableCollections != null ? childTableCollections : emptyList();
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.childTableCollections" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.fieldExpressions" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.parentTables" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.recordCondition" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    public  @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull boolean hasCondition() {
+        return recordCondition != null;
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.childTableCollections" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.fieldExpressions" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.parentTables" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    public  @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull int getJsonPropertiesCount() {
+        return (fieldExpressions != null ? fieldExpressions.size() : 0) + (childTableCollections != null ? childTableCollections.size() : 0) + getReferencedParentTablesList().size() + getInlineParentTablesList().stream().mapToInt(ip -> ip.getParentTableJsonSpec().getJsonPropertiesCount()).sum();
+    }
+}

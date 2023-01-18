@@ -1,0 +1,150 @@
+package org.sqljson.dbmd;
+
+import java.io.Serializable;
+import java.util.*;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import static java.util.Collections.unmodifiableList;
+import static java.util.Objects.requireNonNull;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+@org.checkerframework.framework.qual.AnnotatedFor("org.checkerframework.checker.nullness.NullnessChecker")
+public class ForeignKey implements Serializable {
+
+    private final @org.checkerframework.checker.initialization.qual.FBCBottom @org.checkerframework.checker.nullness.qual.MonotonicNonNull String constraintName;
+
+    // child/referencing table
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull RelId foreignKeyRelationId;
+
+    // parent/referenced table
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull RelId primaryKeyRelationId;
+
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<Component> foreignKeyComponents;
+
+    public enum EquationStyle {
+
+        SOURCE_ON_LEFTHAND_SIDE, TARGET_ON_LEFTHAND_SIDE
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.constraintName" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    public ForeignKey(@org.checkerframework.checker.initialization.qual.FBCBottom @org.checkerframework.checker.nullness.qual.Nullable String constraintName, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull RelId foreignKeyRelationId, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull RelId primaryKeyRelationId, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<Component> foreignKeyComponents) {
+        this.constraintName = constraintName;
+        this.foreignKeyRelationId = requireNonNull(foreignKeyRelationId);
+        this.primaryKeyRelationId = requireNonNull(primaryKeyRelationId);
+        this.foreignKeyComponents = unmodifiableList(new ArrayList<>(requireNonNull(foreignKeyComponents)));
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.constraintName" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    ForeignKey() {
+        this.constraintName = null;
+        this.foreignKeyRelationId = RelId.DUMMY_INSTANCE;
+        this.primaryKeyRelationId = RelId.DUMMY_INSTANCE;
+        this.foreignKeyComponents = Collections.emptyList();
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.constraintName" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.FBCBottom @org.checkerframework.checker.nullness.qual.Nullable String getConstraintName() {
+        return constraintName;
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.constraintName" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull RelId getForeignKeyRelationId() {
+        return foreignKeyRelationId;
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.constraintName" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull RelId getPrimaryKeyRelationId() {
+        return primaryKeyRelationId;
+    }
+
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.constraintName" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.constraintName" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<Component> getForeignKeyComponents() {
+        return foreignKeyComponents;
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.constraintName" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<String> getChildFieldNames() {
+        List<String> names = new ArrayList<>();
+        for (Component comp : foreignKeyComponents) names.add(comp.getForeignKeyFieldName());
+        return names;
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.constraintName" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<String> getParentFieldNames() {
+        List<String> names = new ArrayList<>();
+        for (Component comp : foreignKeyComponents) names.add(comp.getPrimaryKeyFieldName());
+        return names;
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.constraintName" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String asEquation(String childRelAlias, String parentRelAlias) {
+        return asEquation(childRelAlias, parentRelAlias, EquationStyle.SOURCE_ON_LEFTHAND_SIDE);
+    }
+
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.constraintName" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.constraintName" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String asEquation(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String childRelAlias, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String parentRelAlias, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull EquationStyle style) {
+        StringBuilder sb = new StringBuilder();
+        boolean srcFirst = style == EquationStyle.SOURCE_ON_LEFTHAND_SIDE;
+        for (Component fkc : foreignKeyComponents) {
+            if (sb.length() > 0)
+                sb.append(" and ");
+            String fstAlias = srcFirst ? childRelAlias : parentRelAlias;
+            String fstFld = srcFirst ? fkc.getForeignKeyFieldName() : fkc.getPrimaryKeyFieldName();
+            String sndAlias = srcFirst ? parentRelAlias : childRelAlias;
+            String sndFld = srcFirst ? fkc.getPrimaryKeyFieldName() : fkc.getForeignKeyFieldName();
+            if (fstAlias.length() > 0) {
+                sb.append(fstAlias);
+                sb.append('.');
+            }
+            sb.append(fstFld);
+            sb.append(" = ");
+            if (sndAlias.length() > 0) {
+                sb.append(sndAlias);
+                sb.append('.');
+            }
+            sb.append(sndFld);
+        }
+        return sb.toString();
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.constraintName" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    public  @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull boolean foreignKeyFieldNamesSetEquals(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull Set<String> normdReqdFkFieldNames) {
+        if (getForeignKeyComponents().size() != normdReqdFkFieldNames.size())
+            return false;
+        Set<String> fkFieldNames = new HashSet<>();
+        for (ForeignKey.Component fk_comp : getForeignKeyComponents()) fkFieldNames.add(fk_comp.getForeignKeyFieldName());
+        return fkFieldNames.equals(normdReqdFkFieldNames);
+    }
+
+    public static class Component {
+
+        private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String foreignKeyFieldName;
+
+        private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String primaryKeyFieldName;
+
+        public Component(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String fkName, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String pkName) {
+            foreignKeyFieldName = fkName;
+            primaryKeyFieldName = pkName;
+        }
+
+        private Component() {
+            this.foreignKeyFieldName = "";
+            this.primaryKeyFieldName = "";
+        }
+
+        @org.checkerframework.dataflow.qual.Pure
+        public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String getForeignKeyFieldName() {
+            return foreignKeyFieldName;
+        }
+
+        @org.checkerframework.dataflow.qual.Pure
+        public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String getPrimaryKeyFieldName() {
+            return primaryKeyFieldName;
+        }
+    }
+}

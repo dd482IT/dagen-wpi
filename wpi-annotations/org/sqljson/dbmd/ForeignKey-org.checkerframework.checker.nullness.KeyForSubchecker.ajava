@@ -1,0 +1,137 @@
+package org.sqljson.dbmd;
+
+import java.io.Serializable;
+import java.util.*;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import static java.util.Collections.unmodifiableList;
+import static java.util.Objects.requireNonNull;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+@org.checkerframework.framework.qual.AnnotatedFor("org.checkerframework.checker.nullness.KeyForSubchecker")
+public class ForeignKey implements Serializable {
+
+    private final  String constraintName;
+
+    // child/referencing table
+    private final  RelId foreignKeyRelationId;
+
+    // parent/referenced table
+    private final  RelId primaryKeyRelationId;
+
+    private final  List<Component> foreignKeyComponents;
+
+    public enum EquationStyle {
+
+        SOURCE_ON_LEFTHAND_SIDE, TARGET_ON_LEFTHAND_SIDE
+    }
+
+    public ForeignKey( String constraintName,  RelId foreignKeyRelationId,  RelId primaryKeyRelationId,  List<Component> foreignKeyComponents) {
+        this.constraintName = constraintName;
+        this.foreignKeyRelationId = requireNonNull(foreignKeyRelationId);
+        this.primaryKeyRelationId = requireNonNull(primaryKeyRelationId);
+        this.foreignKeyComponents = unmodifiableList(new ArrayList<>(requireNonNull(foreignKeyComponents)));
+    }
+
+    ForeignKey() {
+        this.constraintName = null;
+        this.foreignKeyRelationId = RelId.DUMMY_INSTANCE;
+        this.primaryKeyRelationId = RelId.DUMMY_INSTANCE;
+        this.foreignKeyComponents = Collections.emptyList();
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  String getConstraintName() {
+        return constraintName;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  RelId getForeignKeyRelationId( ForeignKey this) {
+        return foreignKeyRelationId;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  RelId getPrimaryKeyRelationId( ForeignKey this) {
+        return primaryKeyRelationId;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  List<Component> getForeignKeyComponents( ForeignKey this) {
+        return foreignKeyComponents;
+    }
+
+    public  List<String> getChildFieldNames( ForeignKey this) {
+        List<String> names = new ArrayList<>();
+        for (Component comp : foreignKeyComponents) names.add(comp.getForeignKeyFieldName());
+        return names;
+    }
+
+    public  List<String> getParentFieldNames( ForeignKey this) {
+        List<String> names = new ArrayList<>();
+        for (Component comp : foreignKeyComponents) names.add(comp.getPrimaryKeyFieldName());
+        return names;
+    }
+
+    public  String asEquation(String childRelAlias, String parentRelAlias) {
+        return asEquation(childRelAlias, parentRelAlias, EquationStyle.SOURCE_ON_LEFTHAND_SIDE);
+    }
+
+    public  String asEquation( ForeignKey this,  String childRelAlias,  String parentRelAlias,  EquationStyle style) {
+        StringBuilder sb = new StringBuilder();
+        boolean srcFirst = style == EquationStyle.SOURCE_ON_LEFTHAND_SIDE;
+        for (Component fkc : foreignKeyComponents) {
+            if (sb.length() > 0)
+                sb.append(" and ");
+            String fstAlias = srcFirst ? childRelAlias : parentRelAlias;
+            String fstFld = srcFirst ? fkc.getForeignKeyFieldName() : fkc.getPrimaryKeyFieldName();
+            String sndAlias = srcFirst ? parentRelAlias : childRelAlias;
+            String sndFld = srcFirst ? fkc.getPrimaryKeyFieldName() : fkc.getForeignKeyFieldName();
+            if (fstAlias.length() > 0) {
+                sb.append(fstAlias);
+                sb.append('.');
+            }
+            sb.append(fstFld);
+            sb.append(" = ");
+            if (sndAlias.length() > 0) {
+                sb.append(sndAlias);
+                sb.append('.');
+            }
+            sb.append(sndFld);
+        }
+        return sb.toString();
+    }
+
+    public   boolean foreignKeyFieldNamesSetEquals( ForeignKey this,  Set<String> normdReqdFkFieldNames) {
+        if (getForeignKeyComponents().size() != normdReqdFkFieldNames.size())
+            return false;
+        Set<String> fkFieldNames = new HashSet<>();
+        for (ForeignKey.Component fk_comp : getForeignKeyComponents()) fkFieldNames.add(fk_comp.getForeignKeyFieldName());
+        return fkFieldNames.equals(normdReqdFkFieldNames);
+    }
+
+    public static class Component {
+
+        private final  String foreignKeyFieldName;
+
+        private final  String primaryKeyFieldName;
+
+        public Component( String fkName,  String pkName) {
+            foreignKeyFieldName = fkName;
+            primaryKeyFieldName = pkName;
+        }
+
+        private Component() {
+            this.foreignKeyFieldName = "";
+            this.primaryKeyFieldName = "";
+        }
+
+        @org.checkerframework.dataflow.qual.Pure
+        public  String getForeignKeyFieldName( Component this) {
+            return foreignKeyFieldName;
+        }
+
+        @org.checkerframework.dataflow.qual.Pure
+        public  String getPrimaryKeyFieldName( Component this) {
+            return primaryKeyFieldName;
+        }
+    }
+}

@@ -1,0 +1,31 @@
+package org.sqljson.sql_dialects;
+
+import java.util.List;
+import static java.util.stream.Collectors.joining;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.sqljson.util.StringFuns;
+
+@org.checkerframework.framework.qual.AnnotatedFor("org.checkerframework.checker.nullness.KeyForSubchecker")
+public class PostgresDialect implements SqlDialect {
+
+    private final   int indentSpaces;
+
+    public PostgresDialect(  int indentSpaces) {
+        this.indentSpaces = indentSpaces;
+    }
+
+    public  String getRowObjectExpression( PostgresDialect this,  List<String> columnNames,  String fromAlias) {
+        String objectFieldDecls = columnNames.stream().map(colName -> "'" + StringFuns.unDoubleQuote(colName) + "', " + fromAlias + "." + colName).collect(joining(",\n"));
+        return "jsonb_build_object(\n" + StringFuns.indentLines(objectFieldDecls, indentSpaces) + "\n)";
+    }
+
+    @org.checkerframework.dataflow.qual.SideEffectFree
+    public  String getAggregatedRowObjectsExpression( PostgresDialect this,  List<String> columnNames,  String orderBy,  String fromAlias) {
+        return "coalesce(jsonb_agg(" + getRowObjectExpression(columnNames, fromAlias) + (orderBy != null ? " order by " + orderBy.replace("$$", fromAlias) : "") + "),'[]'::jsonb)";
+    }
+
+    @org.checkerframework.dataflow.qual.SideEffectFree
+    public  String getAggregatedColumnValuesExpression( PostgresDialect this,  String columnName,  String orderBy,  String fromAlias) {
+        return "coalesce(jsonb_agg(" + fromAlias + "." + columnName + (orderBy != null ? " order by " + orderBy.replace("$$", fromAlias) : "") + "))";
+    }
+}

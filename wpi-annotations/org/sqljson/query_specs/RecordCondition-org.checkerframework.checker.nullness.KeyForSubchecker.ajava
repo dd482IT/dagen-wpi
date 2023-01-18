@@ -1,0 +1,42 @@
+package org.sqljson.query_specs;
+
+import java.util.List;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+@org.checkerframework.framework.qual.AnnotatedFor("org.checkerframework.checker.nullness.KeyForSubchecker")
+public class RecordCondition {
+
+    private final  String sql;
+
+    private final  List<String> paramNames;
+
+    // table alias variable used in sql
+    private final  String withTableAliasAs;
+
+    private RecordCondition() {
+        this.sql = "";
+        this.paramNames = null;
+        this.withTableAliasAs = null;
+    }
+
+    public RecordCondition(String sql, List<String> paramNames, String withTableAliasAs) {
+        this.sql = sql;
+        this.paramNames = paramNames;
+        this.withTableAliasAs = withTableAliasAs;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  String getSql( RecordCondition this) {
+        return sql;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  List<String> getParamNames( RecordCondition this) {
+        return paramNames;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  String getWithTableAliasAs( RecordCondition this) {
+        return withTableAliasAs;
+    }
+}

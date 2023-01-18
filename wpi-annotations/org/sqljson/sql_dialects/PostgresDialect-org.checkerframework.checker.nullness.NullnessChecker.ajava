@@ -1,0 +1,31 @@
+package org.sqljson.sql_dialects;
+
+import java.util.List;
+import static java.util.stream.Collectors.joining;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.sqljson.util.StringFuns;
+
+@org.checkerframework.framework.qual.AnnotatedFor("org.checkerframework.checker.nullness.NullnessChecker")
+public class PostgresDialect implements SqlDialect {
+
+    private final  @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull int indentSpaces;
+
+    public PostgresDialect( @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull int indentSpaces) {
+        this.indentSpaces = indentSpaces;
+    }
+
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String getRowObjectExpression(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull PostgresDialect this, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<String> columnNames, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String fromAlias) {
+        String objectFieldDecls = columnNames.stream().map(colName -> "'" + StringFuns.unDoubleQuote(colName) + "', " + fromAlias + "." + colName).collect(joining(",\n"));
+        return "jsonb_build_object(\n" + StringFuns.indentLines(objectFieldDecls, indentSpaces) + "\n)";
+    }
+
+    @org.checkerframework.dataflow.qual.SideEffectFree
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String getAggregatedRowObjectsExpression(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull PostgresDialect this, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<String> columnNames, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable String orderBy, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String fromAlias) {
+        return "coalesce(jsonb_agg(" + getRowObjectExpression(columnNames, fromAlias) + (orderBy != null ? " order by " + orderBy.replace("$$", fromAlias) : "") + "),'[]'::jsonb)";
+    }
+
+    @org.checkerframework.dataflow.qual.SideEffectFree
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String getAggregatedColumnValuesExpression(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull PostgresDialect this, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String columnName, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable String orderBy, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String fromAlias) {
+        return "coalesce(jsonb_agg(" + fromAlias + "." + columnName + (orderBy != null ? " order by " + orderBy.replace("$$", fromAlias) : "") + "))";
+    }
+}

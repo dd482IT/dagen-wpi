@@ -1,0 +1,636 @@
+package org.sqljson;
+
+import java.util.*;
+import java.util.function.Function;
+import static java.util.Collections.*;
+import static java.util.Objects.requireNonNull;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.*;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.sqljson.util.StringFuns;
+import org.sqljson.dbmd.DatabaseMetadata;
+import org.sqljson.dbmd.ForeignKey;
+import org.sqljson.dbmd.RelId;
+import org.sqljson.query_specs.*;
+import org.sqljson.sql_dialects.SqlDialect;
+import static org.sqljson.QuerySqlGenerator.SelectEntry.Source.HIDDEN_PK;
+import static org.sqljson.QuerySqlGenerator.SelectEntry.Source.NATIVE_FIELD;
+import static org.sqljson.query_specs.ResultRepr.MULTI_COLUMN_ROWS;
+import static org.sqljson.query_specs.SpecError.specError;
+import static org.sqljson.util.Nullables.*;
+import static org.sqljson.query_specs.QuerySpecValidations.*;
+import static org.sqljson.util.StringFuns.indentLines;
+import static org.sqljson.dbmd.ForeignKeyScope.REGISTERED_TABLES_ONLY;
+
+@org.checkerframework.framework.qual.AnnotatedFor("org.checkerframework.checker.nullness.NullnessChecker")
+public class QuerySqlGenerator {
+
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull DatabaseMetadata dbmd;
+
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull SqlDialect sqlDialect;
+
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.MonotonicNonNull String defaultSchema;
+
+    // Use unqualified names for objects in these schemas.
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull Set<String> unqualifiedNamesSchemas;
+
+    private final  @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull int indentSpaces;
+
+    // default output property naming function
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull Function<String, String> defaultPropNameFn;
+
+    private static final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String HIDDEN_PK_PREFIX = "_";
+
+    private static final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String DEFAULT_TABLE_ALIAS_VAR = "$$";
+
+    /*
+   Note: field name quoting
+   - A field name from the database metadata (DBMD) is quoted iff its interpretation by the database would change
+     with quoting. So DBMD.quoteIfNeeded is applied to all field names from the database metadata when used in queries.
+   - Output field names in the queries spec file (QueryGroup contents) always have DBMD.quoteIfNeeded applied before
+     use to preserve letter case.
+   - Database field names in the queries spec file are always used as-is in queries without quoting or case conversion.
+     Users must quote these identifiers within the specifications file where they are not usable in queries directly,
+     such as if they contain non-alphabetic characters or match a SQL keyword. For most schemas none of these field
+     references would need quoting and the spec files can safely be used across database types.
+   Summary: DBMD.quoteIfNeeded is applied to all field names except database field names from the queries spec file.
+   */
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    public QuerySqlGenerator(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull DatabaseMetadata dbmd, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable String defaultSchema, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull Set<String> unqualifiedNamesSchemas, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull Function<String, String> defaultPropNameFn) {
+        this.dbmd = dbmd;
+        this.indentSpaces = 2;
+        this.sqlDialect = SqlDialect.fromDatabaseMetadata(this.dbmd, this.indentSpaces);
+        this.defaultSchema = defaultSchema;
+        this.unqualifiedNamesSchemas = unqualifiedNamesSchemas.stream().map(dbmd::normalizeName).collect(toSet());
+        this.defaultPropNameFn = defaultPropNameFn;
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull Map<ResultRepr, String> generateSqls(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull QuerySpec querySpec) {
+        // This query spec may customize the default output field name making function.
+        Function<String, String> propNameFn = applyOr(querySpec.getPropertyNameDefault(), PropertyNameDefault::toFunctionOfFieldName, this.defaultPropNameFn);
+        return querySpec.getResultRepresentationsList().stream().collect(toMap(identity(), repr -> queryResultReprSql(querySpec, repr, propNameFn)));
+    }
+
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    private @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String queryResultReprSql(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull QuerySpec querySpec, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull ResultRepr resultRepr, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull Function<String, String> propNameFn) {
+        TableJsonSpec tjs = querySpec.getTableJson();
+        // for error reporting
+        SpecLocation specLoc = new SpecLocation(querySpec.getQueryName());
+        if (querySpec.getForUpdateOrDefault() && resultRepr != MULTI_COLUMN_ROWS)
+            throw specError(querySpec, "for update clause", "FOR UPDATE only allowed with MULTI_COLUMN_ROWS");
+        switch(resultRepr) {
+            case JSON_OBJECT_ROWS:
+                return jsonObjectRowsSql(tjs, null, querySpec.getOrderBy(), propNameFn, specLoc);
+            case JSON_ARRAY_ROW:
+                return jsonArrayRowSql(tjs, null, false, querySpec.getOrderBy(), propNameFn, specLoc);
+            case MULTI_COLUMN_ROWS:
+                return baseQuery(tjs, null, false, querySpec.getOrderBy(), propNameFn, specLoc).sql + (querySpec.getForUpdateOrDefault() ? "\nfor update" : "");
+            default:
+                throw specError(querySpec, "resultRepresentations", "Result representation is not valid.");
+        }
+    }
+
+    /**
+     * Generate SQL and column name metadata for the given table output
+     *  specification and parent/child condition, with multi-column and multi-row
+     *  representation of results.
+     * @param tableSpec
+     *    The output specification for this table, the subject of the query.
+     * @param parentChildCond
+     *    A filter condition on this table from a parent or child table whose
+     *    alias (accessible from the condition) can be assumed to be in context.
+     * @param exportPkFieldsHidden
+     *    If enabled then all primary key fields will be added to the SQL select
+     *    clause but not are not listed in the result columns list which
+     *    is reserved for columns intended for final results. The primary key
+     *    columns added for this option have prefixed output names to avoid name
+     *    collisions. This is useful for filtering results of this base query
+     *    such as for parent child relationship conditions.
+     * @return
+     *    A BaseQuery structure containing the generated SQL and some metadata
+     *    about the query (e.g. column names).
+     */
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    private @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull BaseQuery baseQuery(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull TableJsonSpec tableSpec, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable ParentChildCondition parentChildCond,  @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull boolean exportPkFieldsHidden, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable String orderBy, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull Function<String, String> propNameFn, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull SpecLocation specLoc) {
+        SqlParts q = new SqlParts();
+        RelId relId = identifyTable(tableSpec.getTable(), specLoc);
+        String alias = q.makeNewAliasFor(relId.getName());
+        q.fromEntries.add(minimalRelIdentifier(relId) + " " + alias);
+        ifPresent(parentChildCond, pcCond -> q.aliasesInScope.add(pcCond.getOtherTableAlias()));
+        if (exportPkFieldsHidden)
+            q.selectEntries.addAll(hiddenPkSelectEntries(relId, alias));
+        q.selectEntries.addAll(tableFieldExpressionSelectEntries(tableSpec, alias, propNameFn, specLoc));
+        q.addParts(inlineParentsSqlParts(tableSpec, relId, alias, q.aliasesInScope, propNameFn, specLoc));
+        q.addParts(referencedParentsSqlParts(tableSpec, relId, alias, propNameFn, specLoc));
+        q.selectEntries.addAll(childCollectionSelectEntries(tableSpec, relId, alias, propNameFn, specLoc));
+        // Add parent/child relationship filter condition if any to the where clause.
+        ifPresent(parentChildCond, pcCond -> q.whereEntries.add(pcCond.asEquationConditionOn(alias, dbmd)));
+        ifPresent(recordConditionSql(tableSpec, alias), q.whereEntries::add);
+        if (orderBy != null)
+            q.orderBy = orderBy;
+        List<String> columnNames = q.selectEntries.stream().filter(e -> e.getSource() != HIDDEN_PK).map(SelectEntry::getName).collect(toList());
+        return new BaseQuery(q.toSql(indentSpaces), columnNames);
+    }
+
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    private @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<SelectEntry> hiddenPkSelectEntries(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull RelId relId, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String alias) {
+        return dbmd.getPrimaryKeyFieldNames(relId).stream().map(pkFieldName -> {
+            String pkFieldDbName = dbmd.quoteIfNeeded(pkFieldName);
+            String pkFieldOutputName = dbmd.quoteIfNeeded(HIDDEN_PK_PREFIX + pkFieldName);
+            return new SelectEntry(alias + "." + pkFieldDbName, pkFieldOutputName, HIDDEN_PK);
+        }).collect(toList());
+    }
+
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    private @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<SelectEntry> tableFieldExpressionSelectEntries(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull TableJsonSpec tableSpec, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String alias, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull Function<String, String> propNameFn, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull SpecLocation specLoc) {
+        verifyTableFieldExpressionsValid(tableSpec, defaultSchema, dbmd, specLoc);
+        List<TableFieldExpr> fieldExprs = tableSpec.getFieldExpressions();
+        if (fieldExprs == null)
+            return emptyList();
+        else {
+            var res = new ArrayList<SelectEntry>();
+            for (int ix = 0; ix < fieldExprs.size(); ++ix) {
+                var tfe = fieldExprs.get(ix);
+                var loc = specLoc.addPart("fieldExpressions entry #" + (ix + 1) + " of table " + tableSpec.getTable());
+                String propName = dbmd.quoteIfNeeded(this.jsonPropertyName(tfe, propNameFn, loc));
+                String sqlExpr = this.tableFieldExpressionSql(tfe, alias, loc);
+                res.add(new SelectEntry(sqlExpr, propName, NATIVE_FIELD));
+            }
+            return res;
+        }
+    }
+
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    private @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String tableFieldExpressionSql(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull TableFieldExpr tableFieldExpr, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String tableAlias, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull SpecLocation specLoc) {
+        if (tableFieldExpr.getField() != null)
+            return tableAlias + "." + requireNonNull(tableFieldExpr.getField());
+        else {
+            String tableAliasVarInExpr = valueOr(tableFieldExpr.getWithTableAliasAs(), DEFAULT_TABLE_ALIAS_VAR);
+            if (tableFieldExpr.getExpression() == null)
+                throw new SpecError(specLoc, "'field' or 'expression' must be provided");
+            String expr = requireNonNull(tableFieldExpr.getExpression());
+            return expr.replace(tableAliasVarInExpr, tableAlias);
+        }
+    }
+
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    private @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull SqlParts inlineParentsSqlParts(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull TableJsonSpec tableSpec, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull RelId relId, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String alias, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull Set<String> aliasesInScope, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull Function<String, String> propNameFn, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull SpecLocation specLoc) {
+        var sqlParts = new SqlParts(emptyList(), emptyList(), emptyList(), null, aliasesInScope);
+        var parentSpecs = tableSpec.getInlineParentTablesList();
+        for (int ix = 0; ix < parentSpecs.size(); ++ix) {
+            var parentSpec = parentSpecs.get(ix);
+            var parentLoc = specLoc.addPart("inline parentTables entry #" + (ix + 1) + ", '" + parentSpec.getTableJson().getTable() + "' table");
+            sqlParts.addParts(inlineParentSqlParts(parentSpec, relId, alias, sqlParts.aliasesInScope, propNameFn, parentLoc));
+        }
+        return sqlParts;
+    }
+
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    private @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull SqlParts inlineParentSqlParts(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull ParentSpec inlineParentSpec, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull RelId childRelId, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String childAlias, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull Set<String> avoidAliases, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull Function<String, String> propNameFn, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull SpecLocation specLoc) {
+        assert inlineParentSpec.getReferenceName() == null;
+        SqlParts q = new SqlParts();
+        TableJsonSpec ptjSpec = inlineParentSpec.getTableJson();
+        BaseQuery fromClauseQuery = baseQuery(ptjSpec, null, true, null, propNameFn, specLoc);
+        String fromClauseQueryAlias = StringFuns.makeNameNotInSet("q", avoidAliases);
+        q.aliasesInScope.add(fromClauseQueryAlias);
+        for (int i = 0; i < fromClauseQuery.resultColumnNames.size(); ++i) {
+            String parentColumn = fromClauseQuery.resultColumnNames.get(i);
+            q.selectEntries.add(new SelectEntry(fromClauseQueryAlias + "." + parentColumn, parentColumn, SelectEntry.Source.INLINE_PARENT, (i == 0 ? lineCommentInlineParentFieldsBegin(inlineParentSpec) : null)));
+        }
+        String joinCond = getParentPkCondition(inlineParentSpec, childRelId, childAlias, specLoc).asEquationConditionOn(fromClauseQueryAlias, dbmd, HIDDEN_PK_PREFIX);
+        q.fromEntries.add(lineCommentJoinToParent(inlineParentSpec) + "\nleft join (\n" + indent(fromClauseQuery.sql) + "\n) " + fromClauseQueryAlias + " on " + joinCond);
+        return q;
+    }
+
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    private @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull ParentPkCondition getParentPkCondition(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull ParentSpec parentSpec, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull RelId childRelId, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String childAlias, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull SpecLocation specLoc) {
+        CustomJoinCondition customJoinCond = parentSpec.getCustomJoinCondition();
+        if (customJoinCond != null) {
+            if (parentSpec.getChildForeignKeyFieldsSet() != null)
+                throw new SpecError(specLoc, "Parent with customJoinCondition cannot specify foreignKeyFields.");
+            return customJoinParentPkCondition(customJoinCond, childAlias);
+        } else {
+            Set<String> childForeignKeyFieldsSet = parentSpec.getChildForeignKeyFieldsSet();
+            RelId parentRelId = identifyTable(parentSpec.getParentTableJsonSpec().getTable(), specLoc);
+            ForeignKey fk = getForeignKey(childRelId, parentRelId, childForeignKeyFieldsSet, specLoc);
+            return new ParentPkCondition(childAlias, fk.getForeignKeyComponents());
+        }
+    }
+
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    private @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull ParentPkCondition customJoinParentPkCondition(@org.checkerframework.checker.initialization.qual.FBCBottom @org.checkerframework.checker.nullness.qual.NonNull CustomJoinCondition customJoinCond, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String childAlias) {
+        List<ForeignKey.Component> virtualForeignKeyComponents = customJoinCond.getEquatedFields().stream().map(eqfs -> new ForeignKey.Component(dbmd.normalizeName(eqfs.getChildField()), dbmd.normalizeName(eqfs.getParentPrimaryKeyField()))).collect(toList());
+        return new QuerySqlGenerator.ParentPkCondition(childAlias, virtualForeignKeyComponents);
+    }
+
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    private @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull SqlParts referencedParentsSqlParts(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull TableJsonSpec tableSpec, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull RelId relId, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String alias, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull Function<String, String> propNameFn, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull SpecLocation specLoc) {
+        var sqlParts = new SqlParts();
+        var parentSpecs = tableSpec.getReferencedParentTablesList();
+        for (int ix = 0; ix < parentSpecs.size(); ++ix) {
+            var parentSpec = parentSpecs.get(ix);
+            var parentLoc = specLoc.addPart("referencedParentTables entry #" + (ix + 1) + ", '" + parentSpec.getTableJson().getTable() + "' table");
+            sqlParts.addParts(referencedParentSqlParts(parentSpec, relId, alias, propNameFn, parentLoc));
+        }
+        return sqlParts;
+    }
+
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    private @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull SqlParts referencedParentSqlParts(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull ParentSpec parentSpec, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull RelId childRelId, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String childAlias, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull Function<String, String> propNameFn, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull SpecLocation specLoc) {
+        final String refName = requireNonNull(parentSpec.getReferenceName());
+        var parentPkCond = getParentPkCondition(parentSpec, childRelId, childAlias, specLoc);
+        var selectEntries = singletonList(new SelectEntry(lineCommentReferencedParent(parentSpec) + "\n(\n" + indent(jsonObjectRowsSql(parentSpec.getTableJson(), parentPkCond, null, propNameFn, specLoc)) + "\n)", dbmd.quoteIfNeeded(refName), SelectEntry.Source.PARENT_REFERENCE, null));
+        return new SqlParts(selectEntries, emptyList(), emptyList(), null, emptySet());
+    }
+
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    private @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<SelectEntry> childCollectionSelectEntries(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull TableJsonSpec tableSpec, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull RelId relId, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String alias, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull Function<String, String> propNameFn, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull SpecLocation specLoc) {
+        List<ChildCollectionSpec> childSpecs = tableSpec.getChildTableCollections();
+        if (childSpecs == null)
+            return emptyList();
+        return childSpecs.stream().map(childSpec -> {
+            SpecLocation loc = specLoc.addPart("child collection '" + childSpec.getCollectionName() + "'");
+            return new SelectEntry(lineCommentChildCollectionSelectExpression(childSpec) + "\n(\n" + indent(childCollectionQuery(childSpec, relId, alias, propNameFn, loc)) + "\n)", dbmd.quoteIfNeeded(childSpec.getCollectionName()), SelectEntry.Source.CHILD_COLLECTION);
+        }).collect(toList());
+    }
+
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    private @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String childCollectionQuery(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull ChildCollectionSpec childSpec, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull RelId parentRelId, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String parentAlias, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull Function<String, String> propNameFn, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull SpecLocation specLoc) {
+        TableJsonSpec tableSpec = childSpec.getTableJson();
+        RelId childRelId = identifyTable(tableSpec.getTable(), specLoc);
+        var pcCond = getChildFkCondition(childSpec, childRelId, parentRelId, parentAlias, specLoc);
+        boolean unwrapChildValues = valueOr(childSpec.getUnwrap(), false);
+        if (unwrapChildValues && childSpec.getTableJson().getJsonPropertiesCount() > 1)
+            throw new SpecError(specLoc, "Unwrapped child collection option is incompatible with multiple field expressions.");
+        return jsonArrayRowSql(tableSpec, pcCond, unwrapChildValues, childSpec.getOrderBy(), propNameFn, specLoc);
+    }
+
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    private @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull ChildFkCondition getChildFkCondition(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull ChildCollectionSpec childCollectionSpec, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull RelId childRelId, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull RelId parentRelId, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String parentAlias, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull SpecLocation specLoc) {
+        CustomJoinCondition customJoinCond = childCollectionSpec.getCustomJoinCondition();
+        if (// custom join condition specified
+        customJoinCond != null) {
+            if (childCollectionSpec.getForeignKeyFields() != null)
+                throw new SpecError(specLoc, "Child collection that specifies customJoinCondition cannot specify foreignKeyFields.");
+            validateCustomJoinCondition(customJoinCond, childRelId, parentRelId, dbmd, specLoc.addPart("custom join condition"));
+            return customJoinChildFkCondition(customJoinCond, parentAlias);
+        } else // foreign key join condition
+        {
+            Set<String> fkFields = childCollectionSpec.getForeignKeyFieldsSet();
+            ForeignKey fk = getForeignKey(childRelId, parentRelId, fkFields, specLoc);
+            return new ChildFkCondition(parentAlias, fk.getForeignKeyComponents());
+        }
+    }
+
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    private @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull ChildFkCondition customJoinChildFkCondition(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull CustomJoinCondition customJoinCond, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String parentAlias) {
+        List<ForeignKey.Component> virtualFkComps = customJoinCond.getEquatedFields().stream().map(eqfs -> new ForeignKey.Component(dbmd.normalizeName(eqfs.getChildField()), dbmd.normalizeName(eqfs.getParentPrimaryKeyField()))).collect(toList());
+        return new QuerySqlGenerator.ChildFkCondition(parentAlias, virtualFkComps);
+    }
+
+    /**
+     * Make a query having a single row and column result, with the result value
+     *  representing the collection of json object representations of all rows
+     *  of the table whose output specification is passed.
+     * @param tableSpec  The output specification for this table, the subject of the query.
+     * @param parentChildCond A filter condition on this table (always) from a parent or child table whose alias
+     *                        (accessible from the condition) can be assumed to be in context.
+     * @return the generated SQL query
+     */
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    private @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String jsonArrayRowSql(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull TableJsonSpec tableSpec, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable ParentChildCondition parentChildCond,  @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull boolean unwrap, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable String orderBy, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull Function<String, String> propNameFn, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull SpecLocation specLoc) {
+        BaseQuery baseQuery = baseQuery(tableSpec, parentChildCond, false, null, propNameFn, specLoc);
+        if (unwrap && baseQuery.resultColumnNames.size() != 1)
+            throw new SpecError(specLoc, "Unwrapped child collections cannot have multiple field expressions.");
+        return "select\n" + indent(lineCommentAggregatedRowObjects(tableSpec)) + "\n" + indent((unwrap ? sqlDialect.getAggregatedColumnValuesExpression(baseQuery.resultColumnNames.get(0), orderBy, "q") : sqlDialect.getAggregatedRowObjectsExpression(baseQuery.resultColumnNames, orderBy, "q"))) + " json\nfrom (\n" + indent(lineCommentBaseTableQuery(tableSpec)) + "\n" + indent(baseQuery.sql) + "\n) q";
+    }
+
+    /**
+     * Make a query having JSON object result values at the top level of the
+     *  result set. The query returns a JSON value in a single column and with
+     *  any number of result rows.
+     * @param tjSpec  The output specification for this table, the subject of the query.
+     * @param parentChildCond A filter condition on this table (always) from a parent or child table whose alias
+     *                        (accessible from the condition) can be assumed to be in context.
+     * @return the generated SQL query
+     */
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    private @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String jsonObjectRowsSql(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull TableJsonSpec tjSpec, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable ParentChildCondition parentChildCond, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable String orderBy, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull Function<String, String> propNameFn, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull SpecLocation specLoc) {
+        BaseQuery baseQuery = baseQuery(tjSpec, parentChildCond, false, null, propNameFn, specLoc);
+        return "select\n" + indent(lineCommentTableRowObject(tjSpec)) + "\n" + indent(sqlDialect.getRowObjectExpression(baseQuery.resultColumnNames, "q")) + " json\nfrom (\n" + indent(lineCommentBaseTableQuery(tjSpec)) + "\n" + indent(baseQuery.sql) + "\n) q" + (orderBy != null ? "\norder by " + orderBy.replace("$$", "q") : "");
+    }
+
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.SideEffectFree
+    private @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable String recordConditionSql(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull TableJsonSpec tableSpec, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String tableAlias) {
+        RecordCondition cond = tableSpec.getRecordCondition();
+        if (cond != null) {
+            String tableAliasVar = valueOr(cond.getWithTableAliasAs(), DEFAULT_TABLE_ALIAS_VAR);
+            return "(" + cond.getSql().replace(tableAliasVar, tableAlias) + ")";
+        } else
+            return null;
+    }
+
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    private @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull ForeignKey getForeignKey(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull RelId childRelId, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull RelId parentRelId, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable Set<String> foreignKeyFields, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull SpecLocation specLoc) {
+        ForeignKey fk = dbmd.getForeignKeyFromTo(childRelId, parentRelId, foreignKeyFields, REGISTERED_TABLES_ONLY);
+        if (fk == null) {
+            throw new SpecError(specLoc, "No foreign key found from " + childRelId.getName() + " to " + parentRelId.getName() + " via " + (foreignKeyFields != null ? "foreign keys " + foreignKeyFields : "implicit foreign key fields") + ".");
+        }
+        return fk;
+    }
+
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    private @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String jsonPropertyName(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull TableFieldExpr tfe, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull Function<String, String> defaultFn, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull SpecLocation specLoc) {
+        if (tfe.getField() != null)
+            return valueOrGet(tfe.getJsonProperty(), () -> defaultFn.apply(requireNonNull(tfe.getField())));
+        else {
+            if (tfe.getExpression() == null)
+                throw new SpecError(specLoc, "'field' or 'expression' must be provided");
+            return valueOrThrow(tfe.getJsonProperty(), () -> new SpecError(specLoc, "Json property required for expression field " + tfe.getExpression() + "."));
+        }
+    }
+
+    /// Return a possibly qualified identifier for the given relation, omitting the schema
+    /// qualifier if it has a schema for which it's specified to use unqualified names.
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.SideEffectFree
+    private @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String minimalRelIdentifier(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull RelId relId) {
+        String schema = relId.getSchema();
+        if (schema == null || unqualifiedNamesSchemas.contains(dbmd.normalizeName(schema)))
+            return relId.getName();
+        else
+            return relId.getIdString();
+    }
+
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    private @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull RelId identifyTable(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String table, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull SpecLocation loc) {
+        return QuerySpecValidations.identifyTable(table, defaultSchema, dbmd, loc);
+    }
+
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    private static @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String lineCommentTableRowObject(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull TableJsonSpec tableJsonSpec) {
+        return "-- row object builder for table '" + tableJsonSpec.getTable() + "'";
+    }
+
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    private static @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String lineCommentBaseTableQuery(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull TableJsonSpec tableSpec) {
+        return "-- base query for table '" + tableSpec.getTable() + "'";
+    }
+
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    private static @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String lineCommentAggregatedRowObjects(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull TableJsonSpec tableSpec) {
+        return "-- aggregated row objects builder for table '" + tableSpec.getTable() + "'";
+    }
+
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    private static @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String lineCommentChildCollectionSelectExpression(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull ChildCollectionSpec childSpec) {
+        return "-- records from child table '" + childSpec.getTableJson().getTable() + "' as collection '" + childSpec.getCollectionName() + "'";
+    }
+
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    private static @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String lineCommentJoinToParent(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull ParentSpec parentSpec) {
+        return "-- parent table '" + parentSpec.getTableJson().getTable() + "', joined for inlined fields";
+    }
+
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    private static @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String lineCommentInlineParentFieldsBegin(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull ParentSpec parentSpec) {
+        return "-- field(s) inlined from parent table '" + parentSpec.getTableJson().getTable() + "'";
+    }
+
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    private static @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String lineCommentReferencedParent(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull ParentSpec parentSpec) {
+        return "-- parent table '" + parentSpec.getTableJson().getTable() + "' referenced as '" + parentSpec.getReferenceName() + "'";
+    }
+
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.defaultSchema" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    private @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String indent(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String s) {
+        return indentLines(s, indentSpaces, true);
+    }
+
+    ///////////////////////////////////////////////////
+    // utility types
+    ///////////////////////////////////////////////////
+    private static class BaseQuery {
+
+        final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String sql;
+
+        final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<String> resultColumnNames;
+
+        BaseQuery(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String sql, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<String> resultColumnNames) {
+            this.sql = sql;
+            this.resultColumnNames = List.copyOf(resultColumnNames);
+        }
+    }
+
+    /// Represents some condition on a table in context with reference to another
+    /// table which is identified by its alias.
+    private interface ParentChildCondition {
+
+        @org.checkerframework.dataflow.qual.Pure
+        @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String asEquationConditionOn(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String tableAlias, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull DatabaseMetadata dbmd);
+
+        @org.checkerframework.dataflow.qual.Pure
+        @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String getOtherTableAlias();
+    }
+
+    private static class ParentPkCondition implements ParentChildCondition {
+
+        private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String childAlias;
+
+        private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<ForeignKey.Component> matchedFields;
+
+        ParentPkCondition(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String childAlias, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<ForeignKey.Component> matchedFields) {
+            this.childAlias = childAlias;
+            this.matchedFields = List.copyOf(matchedFields);
+        }
+
+        @org.checkerframework.dataflow.qual.Pure
+        public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String getOtherTableAlias(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull ParentPkCondition this) {
+            return childAlias;
+        }
+
+        public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String asEquationConditionOn(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull ParentPkCondition this, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String parentAlias, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull DatabaseMetadata dbmd) {
+            return asEquationConditionOn(parentAlias, dbmd, "");
+        }
+
+        public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String asEquationConditionOn(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String parentAlias, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull DatabaseMetadata dbmd, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String parentPkPrefix) {
+            return matchedFields.stream().map(mf -> childAlias + "." + dbmd.quoteIfNeeded(mf.getForeignKeyFieldName()) + " = " + parentAlias + "." + dbmd.quoteIfNeeded(parentPkPrefix + mf.getPrimaryKeyFieldName())).collect(joining(" and "));
+        }
+    }
+
+    private static class ChildFkCondition implements ParentChildCondition {
+
+        private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String parentAlias;
+
+        private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<ForeignKey.Component> matchedFields;
+
+        ChildFkCondition(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String parentAlias, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<ForeignKey.Component> matchedFields) {
+            this.parentAlias = parentAlias;
+            this.matchedFields = List.copyOf(matchedFields);
+        }
+
+        @org.checkerframework.dataflow.qual.Pure
+        public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String getOtherTableAlias(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull ChildFkCondition this) {
+            return parentAlias;
+        }
+
+        public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String asEquationConditionOn(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull ChildFkCondition this, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String childAlias, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull DatabaseMetadata dbmd) {
+            return matchedFields.stream().map(mf -> childAlias + "." + dbmd.quoteIfNeeded(mf.getForeignKeyFieldName()) + " = " + parentAlias + "." + dbmd.quoteIfNeeded(mf.getPrimaryKeyFieldName())).collect(joining(" and "));
+        }
+    }
+
+    static class SelectEntry {
+
+        enum Source {
+
+            NATIVE_FIELD, INLINE_PARENT, PARENT_REFERENCE, CHILD_COLLECTION, HIDDEN_PK
+        }
+
+        private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String valueExpression;
+
+        private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String name;
+
+        private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull Source source;
+
+        private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.MonotonicNonNull String comment;
+
+        @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.comment" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+        public SelectEntry(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String valueExpression, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String name, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull Source source) {
+            this(valueExpression, name, source, null);
+        }
+
+        @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.comment" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+        public SelectEntry(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String valueExpression, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String name, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull Source source, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable String comment) {
+            this.valueExpression = valueExpression;
+            this.name = name;
+            this.source = source;
+            this.comment = comment;
+        }
+
+        @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.comment" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+        @org.checkerframework.dataflow.qual.Pure
+        @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String getValueExpression() {
+            return valueExpression;
+        }
+
+        @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.comment" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+        @org.checkerframework.dataflow.qual.Pure
+        @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String getName() {
+            return name;
+        }
+
+        @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.comment" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+        @org.checkerframework.dataflow.qual.Pure
+        @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull Source getSource() {
+            return source;
+        }
+
+        @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.comment" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+        @org.checkerframework.dataflow.qual.Pure
+        @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable String getComment() {
+            return comment;
+        }
+    }
+
+    private static class SqlParts {
+
+        private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<SelectEntry> selectEntries;
+
+        private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<String> fromEntries;
+
+        private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<String> whereEntries;
+
+        private @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.MonotonicNonNull String orderBy;
+
+        private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull Set<String> aliasesInScope;
+
+        @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.orderBy" }, qualifier = org.checkerframework.checker.initialization.qual.FBCBottom.class)
+        @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.orderBy" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+        SqlParts() {
+            this.selectEntries = new ArrayList<>();
+            this.fromEntries = new ArrayList<>();
+            this.whereEntries = new ArrayList<>();
+            this.orderBy = null;
+            this.aliasesInScope = new HashSet<>();
+        }
+
+        @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.orderBy" }, qualifier = org.checkerframework.checker.initialization.qual.FBCBottom.class)
+        @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.orderBy" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+        SqlParts(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<SelectEntry> selectEntries, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<String> fromEntries, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<String> whereEntries, @org.checkerframework.checker.initialization.qual.FBCBottom @org.checkerframework.checker.nullness.qual.Nullable String orderBy, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull Set<String> aliasesInScope) {
+            this.selectEntries = new ArrayList<>(selectEntries);
+            this.fromEntries = new ArrayList<>(fromEntries);
+            this.whereEntries = new ArrayList<>(whereEntries);
+            this.orderBy = orderBy;
+            this.aliasesInScope = new HashSet<>(aliasesInScope);
+        }
+
+        void addParts(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull SqlParts otherParts) {
+            selectEntries.addAll(otherParts.selectEntries);
+            fromEntries.addAll(otherParts.fromEntries);
+            whereEntries.addAll(otherParts.whereEntries);
+            aliasesInScope.addAll(otherParts.aliasesInScope);
+        }
+
+        @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String makeNewAliasFor(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String dbObjectName) {
+            String alias = StringFuns.makeNameNotInSet(StringFuns.lowercaseInitials(dbObjectName, "_"), aliasesInScope);
+            aliasesInScope.add(alias);
+            return alias;
+        }
+
+        @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.orderBy" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+        @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String toSql( @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull int indentSpaces) {
+            String selectEntriesStr = selectEntries.stream().map(SqlParts::makeSelectClauseEntrySql).collect(joining(",\n"));
+            String fromEntriesStr = String.join("\n", fromEntries);
+            String whereEntriesStr = String.join(" and\n", whereEntries);
+            return "select\n" + indentLines(selectEntriesStr, indentSpaces) + "\nfrom\n" + indentLines(fromEntriesStr, indentSpaces) + "\n" + (whereEntries.isEmpty() ? "" : "where (\n" + indentLines(whereEntriesStr, indentSpaces) + "\n)") + (orderBy != null ? "\norder by " + orderBy : "");
+        }
+
+        // Make sql string for a select clause entry.
+        @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.orderBy" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+        @org.checkerframework.dataflow.qual.Pure
+        private static @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String makeSelectClauseEntrySql(SelectEntry sce) {
+            String exprNameSep = sce.getName().startsWith("\"") ? " " : " as ";
+            String comment = sce.getComment();
+            return (comment != null ? comment + "\n" : "") + sce.getValueExpression() + exprNameSep + sce.getName();
+        }
+    }
+}

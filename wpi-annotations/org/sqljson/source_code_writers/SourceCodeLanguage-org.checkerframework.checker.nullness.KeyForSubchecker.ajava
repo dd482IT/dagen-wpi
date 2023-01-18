@@ -1,0 +1,7 @@
+package org.sqljson.source_code_writers;
+
+@org.checkerframework.framework.qual.AnnotatedFor("org.checkerframework.checker.nullness.KeyForSubchecker")
+public enum SourceCodeLanguage {
+
+    Java, TypeScript
+}

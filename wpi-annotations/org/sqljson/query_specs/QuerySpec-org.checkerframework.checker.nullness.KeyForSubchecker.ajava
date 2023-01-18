@@ -1,0 +1,124 @@
+package org.sqljson.query_specs;
+
+import java.util.ArrayList;
+import java.util.List;
+import static java.util.Collections.*;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import static org.sqljson.util.Nullables.valueOr;
+import static org.sqljson.query_specs.ResultRepr.JSON_OBJECT_ROWS;
+
+@org.checkerframework.framework.qual.AnnotatedFor("org.checkerframework.checker.nullness.KeyForSubchecker")
+public final class QuerySpec {
+
+    private final  String queryName;
+
+    private final  TableJsonSpec tableJson;
+
+    private final  List<ResultRepr> resultRepresentations;
+
+    private final  Boolean generateResultTypes;
+
+    // Contains at least the resource name for generated SQL, if not result types.
+    private final  Boolean generateSource;
+
+    // inherited from query group spec if empty
+    private final  PropertyNameDefault propertyNameDefault;
+
+    private final  String orderBy;
+
+    private final  Boolean forUpdate;
+
+    private final  String typesFileHeader;
+
+    private QuerySpec() {
+        this.queryName = "";
+        this.tableJson = new TableJsonSpec();
+        this.resultRepresentations = singletonList(JSON_OBJECT_ROWS);
+        this.generateResultTypes = true;
+        this.generateSource = true;
+        this.propertyNameDefault = null;
+        this.orderBy = null;
+        this.forUpdate = false;
+        this.typesFileHeader = null;
+    }
+
+    public QuerySpec(String queryName, TableJsonSpec tableJson, List<ResultRepr> resultRepresentations, Boolean generateResultTypes, Boolean generateSource, PropertyNameDefault propertyNameDefault, String orderBy, Boolean forUpdate, String typesFileHeader) {
+        this.queryName = queryName;
+        this.resultRepresentations = resultRepresentations != null ? unmodifiableList(new ArrayList<>(resultRepresentations)) : singletonList(JSON_OBJECT_ROWS);
+        this.generateResultTypes = generateResultTypes;
+        this.generateSource = generateSource;
+        this.propertyNameDefault = propertyNameDefault;
+        this.tableJson = tableJson;
+        this.orderBy = orderBy;
+        this.forUpdate = forUpdate;
+        this.typesFileHeader = typesFileHeader;
+        if (valueOr(generateResultTypes, true) && !valueOr(generateSource, true))
+            throw new RuntimeException("In query \"" + queryName + "", cannot generate result types without generateSource option enabled.");
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  String getQueryName( QuerySpec this) {
+        return queryName;
+    }
+
+    /// Generates a SQL query for each of the specified result representations.
+    @org.checkerframework.dataflow.qual.Pure
+    public  List<ResultRepr> getResultRepresentations() {
+        return resultRepresentations;
+    }
+
+    public  List<ResultRepr> getResultRepresentationsList( QuerySpec this) {
+        return resultRepresentations != null ? resultRepresentations : singletonList(JSON_OBJECT_ROWS);
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  Boolean getGenerateResultTypes() {
+        return generateResultTypes;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public   boolean getGenerateResultTypesOrDefault( QuerySpec this) {
+        return generateResultTypes != null ? generateResultTypes : true;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  Boolean getGenerateSource() {
+        return generateSource;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public   boolean getGenerateSourceOrDefault() {
+        return generateSource != null ? generateSource : true;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  PropertyNameDefault getPropertyNameDefault( QuerySpec this) {
+        return propertyNameDefault;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  TableJsonSpec getTableJson( QuerySpec this) {
+        return tableJson;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  String getOrderBy( QuerySpec this) {
+        return orderBy;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  Boolean getForUpdate() {
+        return forUpdate;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public   boolean getForUpdateOrDefault( QuerySpec this) {
+        return forUpdate != null ? forUpdate : false;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public  String getTypesFileHeader( QuerySpec this) {
+        return typesFileHeader;
+    }
+}

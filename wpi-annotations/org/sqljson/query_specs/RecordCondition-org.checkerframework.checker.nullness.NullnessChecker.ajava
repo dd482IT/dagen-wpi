@@ -1,0 +1,54 @@
+package org.sqljson.query_specs;
+
+import java.util.List;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+@org.checkerframework.framework.qual.AnnotatedFor("org.checkerframework.checker.nullness.NullnessChecker")
+public class RecordCondition {
+
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String sql;
+
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.MonotonicNonNull List<String> paramNames;
+
+    // table alias variable used in sql
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.MonotonicNonNull String withTableAliasAs;
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.paramNames" }, qualifier = org.checkerframework.checker.initialization.qual.FBCBottom.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.paramNames" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.withTableAliasAs" }, qualifier = org.checkerframework.checker.initialization.qual.FBCBottom.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.withTableAliasAs" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    private RecordCondition() {
+        this.sql = "";
+        this.paramNames = null;
+        this.withTableAliasAs = null;
+    }
+
+    @org.checkerframework.checker.nullness.qual.EnsuresNonNull({ "this.paramNames" })
+    @org.checkerframework.checker.nullness.qual.EnsuresNonNull({ "this.withTableAliasAs" })
+    public RecordCondition(String sql, List<String> paramNames, String withTableAliasAs) {
+        this.sql = sql;
+        this.paramNames = paramNames;
+        this.withTableAliasAs = withTableAliasAs;
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.paramNames" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.withTableAliasAs" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String getSql() {
+        return sql;
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.paramNames" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.withTableAliasAs" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable List<String> getParamNames() {
+        return paramNames;
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.paramNames" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.withTableAliasAs" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable String getWithTableAliasAs() {
+        return withTableAliasAs;
+    }
+}

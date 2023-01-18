@@ -1,0 +1,60 @@
+package org.sqljson.query_specs;
+
+import java.util.Collections;
+import java.util.List;
+
+@org.checkerframework.framework.qual.AnnotatedFor("org.checkerframework.checker.nullness.NullnessChecker")
+public class CustomJoinCondition {
+
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<FieldPair> equatedFields;
+
+    private CustomJoinCondition() {
+        equatedFields = Collections.emptyList();
+    }
+
+    public CustomJoinCondition(List<FieldPair> equatedFields) {
+        this.equatedFields = equatedFields;
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<FieldPair> getEquatedFields() {
+        return equatedFields;
+    }
+
+    public static class FieldPair {
+
+        private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String childField;
+
+        private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String parentPrimaryKeyField;
+
+        public FieldPair(String childField, String parentPrimaryKeyField) {
+            this.childField = childField;
+            this.parentPrimaryKeyField = parentPrimaryKeyField;
+        }
+
+        private FieldPair() {
+            this.childField = "";
+            this.parentPrimaryKeyField = "";
+        }
+
+        @org.checkerframework.dataflow.qual.Pure
+        public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String getChildField() {
+            return childField;
+        }
+
+        @org.checkerframework.dataflow.qual.Pure
+        public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String getParentPrimaryKeyField() {
+            return parentPrimaryKeyField;
+        }
+
+        @org.checkerframework.dataflow.qual.Pure
+        public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String toString(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull FieldPair this) {
+            return "FieldPair{childField='" + childField + '\'' + ", parentPrimaryKeyField='" + parentPrimaryKeyField + '\'' + '}';
+        }
+    }
+
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String toString(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull CustomJoinCondition this) {
+        return "CustomJoinCondition{equatedFields=" + equatedFields + '}';
+    }
+}

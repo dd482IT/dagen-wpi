@@ -1,0 +1,306 @@
+package org.sqljson.dbmd;
+
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.regex.Pattern;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableList;
+import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import static org.sqljson.dbmd.CaseSensitivity.INSENSITIVE_STORED_LOWER;
+import static org.sqljson.dbmd.CaseSensitivity.INSENSITIVE_STORED_UPPER;
+import static org.sqljson.util.Nullables.valueOr;
+
+@org.checkerframework.framework.qual.AnnotatedFor("org.checkerframework.checker.nullness.NullnessChecker")
+public class DatabaseMetadata {
+
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String dbmsName;
+
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String dbmsVersion;
+
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull CaseSensitivity caseSensitivity;
+
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<RelMetadata> relationMetadatas;
+
+    private final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<ForeignKey> foreignKeys;
+
+    private static final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull Predicate<String> lc_ = Pattern.compile("^[a-z_]+$").asPredicate();
+
+    private static final @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull Predicate<String> uc_ = Pattern.compile("^[A-Z_]+$").asPredicate();
+
+    // derived data
+    // Access these only via methods of the same name, which make sure these fields are initialized.
+    private @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.MonotonicNonNull Map<RelId, RelMetadata> relMDsByRelId;
+
+    private @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.MonotonicNonNull Map<RelId, List<ForeignKey>> fksByParentRelId;
+
+    private @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.MonotonicNonNull Map<RelId, List<ForeignKey>> fksByChildRelId;
+
+    public DatabaseMetadata(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<RelMetadata> relationMetadatas, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<ForeignKey> foreignKeys, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull CaseSensitivity caseSensitivity, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String dbmsName, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String dbmsVersion) {
+        this.relationMetadatas = sortedMds(requireNonNull(relationMetadatas));
+        this.foreignKeys = sortedFks(requireNonNull(foreignKeys));
+        this.caseSensitivity = requireNonNull(caseSensitivity);
+        this.dbmsName = requireNonNull(dbmsName);
+        this.dbmsVersion = requireNonNull(dbmsVersion);
+    }
+
+    DatabaseMetadata() {
+        relationMetadatas = emptyList();
+        foreignKeys = emptyList();
+        caseSensitivity = INSENSITIVE_STORED_LOWER;
+        dbmsName = "";
+        dbmsVersion = "";
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.fksByChildRelId" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.fksByParentRelId" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.relMDsByRelId" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<RelMetadata> getRelationMetadatas() {
+        return relationMetadatas;
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.fksByChildRelId" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.fksByParentRelId" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.relMDsByRelId" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<ForeignKey> getForeignKeys() {
+        return foreignKeys;
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.fksByChildRelId" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.fksByParentRelId" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.relMDsByRelId" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull CaseSensitivity getCaseSensitivity() {
+        return caseSensitivity;
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.fksByChildRelId" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.fksByParentRelId" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.relMDsByRelId" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String getDbmsName() {
+        return dbmsName;
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.fksByChildRelId" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.fksByParentRelId" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.relMDsByRelId" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String getDbmsVersion() {
+        return dbmsVersion;
+    }
+
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.fksByChildRelId" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.fksByParentRelId" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.relMDsByRelId" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.checker.nullness.qual.EnsuresNonNull({ "this.relMDsByRelId" })
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable RelMetadata getRelationMetadata(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull RelId relId) {
+        return relMDsByRelId().get(relId);
+    }
+
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.fksByChildRelId" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.fksByParentRelId" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.relMDsByRelId" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.checker.nullness.qual.EnsuresNonNull({ "this.relMDsByRelId" })
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<String> getPrimaryKeyFieldNames(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull RelId relId, @org.checkerframework.checker.initialization.qual.FBCBottom @org.checkerframework.checker.nullness.qual.Nullable String alias) {
+        RelMetadata relMd = requireNonNull(getRelationMetadata(relId));
+        return relMd.getPrimaryKeyFieldNames(alias);
+    }
+
+    @org.checkerframework.checker.nullness.qual.EnsuresNonNull({ "this.relMDsByRelId" })
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<String> getPrimaryKeyFieldNames(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull RelId relId) {
+        return getPrimaryKeyFieldNames(relId, null);
+    }
+
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<ForeignKey> getForeignKeysFromTo(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull RelId childRelId, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull RelId parentRelId, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull ForeignKeyScope fkScope) {
+        List<ForeignKey> res = new ArrayList<>();
+        if (childRelId == null && parentRelId == null)
+            res.addAll(foreignKeys);
+        else if (childRelId != null && parentRelId != null) {
+            res.addAll(fksByChildRelId(childRelId));
+            res.retainAll(fksByParentRelId(parentRelId));
+        } else
+            res.addAll(childRelId != null ? fksByChildRelId(childRelId) : fksByParentRelId(requireNonNull(parentRelId)));
+        if (fkScope == ForeignKeyScope.REGISTERED_TABLES_ONLY) {
+            return res.stream().filter(fk -> getRelationMetadata(fk.getForeignKeyRelationId()) != null && getRelationMetadata(fk.getPrimaryKeyRelationId()) != null).collect(toList());
+        } else
+            return res;
+    }
+
+    /**
+     * Return a single foreign key between the passed tables, having the specified field names if specified,
+     *  or null if not found. IllegalArgumentException is thrown if multiple foreign keys satisfy the requirements.
+     */
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable ForeignKey getForeignKeyFromTo(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull RelId fromRelId, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull RelId toRelId, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable Set<String> fieldNames, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull ForeignKeyScope fkScope) {
+        ForeignKey soughtFk = null;
+        Set<String> normdFkFieldNames = fieldNames != null ? normalizeNames(fieldNames) : null;
+        for (ForeignKey fk : getForeignKeysFromTo(fromRelId, toRelId, fkScope)) {
+            if (normdFkFieldNames == null || fk.foreignKeyFieldNamesSetEquals(normdFkFieldNames)) {
+                if (// already found an fk satisfying requirements?
+                soughtFk != null)
+                    throw new IllegalArgumentException("Child table " + fromRelId + " has multiple foreign keys to parent table " + toRelId + (fieldNames != null ? " with the same specified source fields." : " and no foreign key fields were specified to disambiguate."));
+                soughtFk = fk;
+                // No breaking from the loop here, so case that multiple fk's satisfy requirements can be detected.
+            }
+        }
+        return soughtFk;
+    }
+
+    /////////////////////////////////////////////////////////
+    // Sorting for deterministic output
+    private static @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<RelMetadata> sortedMds(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<RelMetadata> relMds) {
+        List<RelMetadata> rmds = new ArrayList<>(relMds);
+        rmds.sort(Comparator.comparing(rmd -> rmd.getRelationId().getIdString()));
+        return unmodifiableList(rmds);
+    }
+
+    /**
+     * Return a new copy of the input list, with its foreign keys sorted by source and target relation names and source and target field names.
+     */
+    private static @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<ForeignKey> sortedFks(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<ForeignKey> foreignKeys) {
+        List<ForeignKey> fks = new ArrayList<>(foreignKeys);
+        fks.sort((fk1, fk2) -> {
+            int srcRelComp = fk1.getForeignKeyRelationId().getIdString().compareTo(fk2.getForeignKeyRelationId().getIdString());
+            if (srcRelComp != 0)
+                return srcRelComp;
+            int tgtRelComp = fk1.getPrimaryKeyRelationId().getIdString().compareTo(fk2.getPrimaryKeyRelationId().getIdString());
+            if (tgtRelComp != 0)
+                return tgtRelComp;
+            int srcFieldsComp = compareStringListsLexicographically(fk1.getChildFieldNames(), fk2.getChildFieldNames());
+            if (srcFieldsComp != 0)
+                return srcFieldsComp;
+            else
+                return compareStringListsLexicographically(fk1.getParentFieldNames(), fk2.getParentFieldNames());
+        });
+        return unmodifiableList(fks);
+    }
+
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.fksByChildRelId" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.fksByParentRelId" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.relMDsByRelId" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.Pure
+    private static  @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull int compareStringListsLexicographically(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<String> strs1, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull List<String> strs2) {
+        int commonCount = Math.min(strs1.size(), strs2.size());
+        for (int i = 0; i < commonCount; ++i) {
+            int comp = strs1.get(i).compareTo(strs2.get(i));
+            if (comp != 0)
+                return comp;
+        }
+        return Integer.compare(strs1.size(), strs2.size());
+    }
+
+    // Sorting for deterministic output
+    /////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////
+    // Derived data accessor methods
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.fksByChildRelId" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.fksByParentRelId" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.relMDsByRelId" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.checker.nullness.qual.EnsuresNonNull({ "this.relMDsByRelId" })
+    private @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull Map<RelId, RelMetadata> relMDsByRelId() {
+        if (relMDsByRelId == null)
+            initDerivedData();
+        return requireNonNull(relMDsByRelId);
+    }
+
+    @org.checkerframework.checker.nullness.qual.EnsuresNonNull({ "this.fksByParentRelId" })
+    private @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable List<ForeignKey> fksByParentRelId(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull RelId relId) {
+        if (fksByParentRelId == null)
+            initDerivedData();
+        return valueOr(requireNonNull(fksByParentRelId).get(relId), emptyList());
+    }
+
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.fksByChildRelId" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.fksByParentRelId" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.relMDsByRelId" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.checker.nullness.qual.EnsuresNonNull({ "this.fksByChildRelId" })
+    private @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable List<ForeignKey> fksByChildRelId(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull RelId relId) {
+        if (fksByChildRelId == null)
+            initDerivedData();
+        return valueOr(requireNonNull(fksByChildRelId).get(relId), emptyList());
+    }
+
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.fksByChildRelId" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.fksByParentRelId" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.relMDsByRelId" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.checker.nullness.qual.EnsuresNonNull({ "this.fksByChildRelId" })
+    @org.checkerframework.checker.nullness.qual.EnsuresNonNull({ "this.fksByParentRelId" })
+    @org.checkerframework.checker.nullness.qual.EnsuresNonNull({ "this.relMDsByRelId" })
+    private void initDerivedData() {
+        relMDsByRelId = new HashMap<>();
+        fksByParentRelId = new HashMap<>();
+        fksByChildRelId = new HashMap<>();
+        for (RelMetadata relMd : relationMetadatas) relMDsByRelId.put(relMd.getRelationId(), relMd);
+        for (ForeignKey fk : foreignKeys) {
+            RelId srcRelId = fk.getForeignKeyRelationId();
+            RelId tgtRelId = fk.getPrimaryKeyRelationId();
+            List<ForeignKey> fksFromChild = fksByChildRelId.computeIfAbsent(srcRelId, k -> new ArrayList<>());
+            fksFromChild.add(fk);
+            List<ForeignKey> fksToParent = fksByParentRelId.computeIfAbsent(tgtRelId, k -> new ArrayList<>());
+            fksToParent.add(fk);
+        }
+    }
+
+    // Derived data accessor methods
+    /////////////////////////////////////////////////////////
+    /// Quote a database identifier only if it would be interpreted differently if quoted.
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String quoteIfNeeded(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String id) {
+        if (id.startsWith("\"") && id.endsWith("\""))
+            return id;
+        if (id.startsWith("_"))
+            return "\"" + id + "\"";
+        if (caseSensitivity == INSENSITIVE_STORED_LOWER && lc_.test(id))
+            return id;
+        if (caseSensitivity == INSENSITIVE_STORED_UPPER && uc_.test(id))
+            return id;
+        return "\"" + id + "\"";
+    }
+
+    // Normalize a database object name.
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.fksByChildRelId" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.fksByParentRelId" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.relMDsByRelId" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.fksByChildRelId" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.fksByParentRelId" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.relMDsByRelId" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.dataflow.qual.SideEffectFree
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String normalizeName(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String id) {
+        if (id.startsWith("\"") && id.endsWith("\""))
+            return id;
+        else if (caseSensitivity == INSENSITIVE_STORED_LOWER)
+            return id.toLowerCase();
+        else if (caseSensitivity == INSENSITIVE_STORED_UPPER)
+            return id.toUpperCase();
+        else
+            return id;
+    }
+
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.fksByChildRelId" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.fksByParentRelId" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.RequiresQualifier(expression = { "this.relMDsByRelId" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    private @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull Set<String> normalizeNames(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull Set<String> names) {
+        return names.stream().map(this::normalizeName).collect(toSet());
+    }
+
+    /// Make a relation id from a given qualified or unqualified table identifier
+    /// and an optional default schema for interpreting unqualified table names.
+    /// The table is not verified to exist in the metadata.
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.fksByChildRelId" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.fksByParentRelId" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    @org.checkerframework.framework.qual.EnsuresQualifier(expression = { "this.relMDsByRelId" }, qualifier = org.checkerframework.checker.nullness.qual.Nullable.class)
+    public @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull RelId toRelId(@org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.NonNull String table, @org.checkerframework.checker.initialization.qual.Initialized @org.checkerframework.checker.nullness.qual.Nullable String defaultSchema) {
+        int dotIx = table.indexOf('.');
+        if (// already qualified, split it
+        dotIx != -1)
+            return new RelId(normalizeName(table.substring(dotIx + 1)), normalizeName(table.substring(0, dotIx)));
+        else
+            // not qualified, qualify it if there is a default schema
+            return new RelId(defaultSchema != null ? normalizeName(defaultSchema) : null, normalizeName(table));
+    }
+}
