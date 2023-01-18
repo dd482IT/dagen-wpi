@@ -1,0 +1,453 @@
+dan@dan-ubuntu:~/Documents/CFResearch/experiments-live/dagen-wpi$ mvn compile
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -------------------------< org.sqljson:dagen >--------------------------
+[INFO] Building data access generator 1.5.3
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-enforcer-plugin:3.0.0-M3:enforce (enforce-maven) @ dagen ---
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ dagen ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.8.1:compile (default-compile) @ dagen ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 60 source files to /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/target/classes
+[WARNING] KeyForSubchecker did not find annotation file or directory /tmp/WPITEMP-DAGEN on classpath or within directory /tmp
+[WARNING]     Classpath:
+    file:/home/dan/.m2/repository/org/checkerframework/checker/3.29.1-SNAPSHOT/checker-3.29.1-SNAPSHOT.jar
+    file:/home/dan/.m2/repository/org/checkerframework/checker-qual/3.29.1-SNAPSHOT/checker-qual-3.29.1-SNAPSHOT.jar
+    file:/home/dan/.m2/repository/org/checkerframework/checker-util/3.29.1-SNAPSHOT/checker-util-3.29.1-SNAPSHOT.jar
+warning: NullnessChecker did not find annotation file or directory /tmp/WPITEMP-DAGEN on classpath or within directory /tmp
+    Classpath:
+    file:/home/dan/.m2/repository/org/checkerframework/checker/3.29.1-SNAPSHOT/checker-3.29.1-SNAPSHOT.jar
+    file:/home/dan/.m2/repository/org/checkerframework/checker-qual/3.29.1-SNAPSHOT/checker-qual-3.29.1-SNAPSHOT.jar
+    file:/home/dan/.m2/repository/org/checkerframework/checker-util/3.29.1-SNAPSHOT/checker-util-3.29.1-SNAPSHOT.jar
+/home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/RelDescr.java:[27,11] [initialization.fields.uninitialized] the constructor does not initialize fields: relComment
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/RelId.java:[28,3] [initialization.fields.uninitialized] the constructor does not initialize fields: schema
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/RelId.java:[40,24] [purity.not.sideeffectfree.call] call to side-effecting getIdString not allowed in side-effect-free method
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/RelId.java:[45,21] [nulltest.redundant] redundant test against null; "schema" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/RelId.java:[49,32] [override.param] Incompatible parameter type for other.
+  found   : @Initialized @NonNull Object
+  required: @Initialized @Nullable Object
+  Consequence: method in @Initialized @NonNull RelId
+    @Initialized @NonNull boolean equals(@Initialized @NonNull RelId this, @Initialized @NonNull Object p0)
+  cannot override method in @Initialized @NonNull Object
+    @Initialized @NonNull boolean equals(@Initialized @NonNull Object this, @Initialized @Nullable Object p0)
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/RelId.java:[64,21] [nulltest.redundant] redundant test against null; "schema" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/RelMetadata.java:[56,42] [nulltest.redundant] redundant test against null; "f.getPrimaryKeyPartNumber()" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/RelMetadata.java:[62,19] [nulltest.redundant] redundant test against null; "pn" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/RelMetadata.java:[70,37] [argument] incompatible argument for parameter alias of getPrimaryKeyFieldNames.
+  found   : null (NullType)
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/RelMetadata.java:[77,25] [nulltest.redundant] redundant test against null; "alias" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/Field.java:[56,3] [initialization.fields.uninitialized] the constructor does not initialize fields: length, precision, precisionRadix, fractionalDigits, nullable, primaryKeyPartNumber
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/util/Nullables.java:[18,23] [return] incompatible types in return.
+  type of expression: U[ extends @Initialized @Nullable Object super @Initialized @Nullable Void]
+  method return type: U[ extends @Initialized @Nullable Object super @Initialized @NonNull Void]
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/DatabaseMetadata.java:[45,10] [initialization.fields.uninitialized] the constructor does not initialize fields: relMDsByRelId, fksByParentRelId, fksByChildRelId
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/DatabaseMetadata.java:[61,3] [initialization.fields.uninitialized] the constructor does not initialize fields: relMDsByRelId, fksByParentRelId, fksByChildRelId
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/DatabaseMetadata.java:[82,32] [return] incompatible types in return.
+  type of expression: @Initialized @Nullable RelMetadata
+  method return type: @Initialized @NonNull RelMetadata
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/DatabaseMetadata.java:[98,44] [argument] incompatible argument for parameter alias of getPrimaryKeyFieldNames.
+  found   : null (NullType)
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/DatabaseMetadata.java:[110,22] [nulltest.redundant] redundant test against null; "childRelId" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/DatabaseMetadata.java:[110,45] [nulltest.redundant] redundant test against null; "parentRelId" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/DatabaseMetadata.java:[112,27] [nulltest.redundant] redundant test against null; "childRelId" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/DatabaseMetadata.java:[112,50] [nulltest.redundant] redundant test against null; "parentRelId" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/DatabaseMetadata.java:[118,31] [nulltest.redundant] redundant test against null; "childRelId" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/DatabaseMetadata.java:[125,65] [nulltest.redundant] redundant test against null; "getRelationMetadata(fk.getForeignKeyRelationId())" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/DatabaseMetadata.java:[126,65] [nulltest.redundant] redundant test against null; "getRelationMetadata(fk.getPrimaryKeyRelationId())" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/DatabaseMetadata.java:[146,49] [nulltest.redundant] redundant test against null; "fieldNames" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/DatabaseMetadata.java:[155,30] [nulltest.redundant] redundant test against null; "fieldNames" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/DatabaseMetadata.java:[165,13] [return] incompatible types in return.
+  type of expression: @Initialized @Nullable ForeignKey
+  method return type: @Initialized @NonNull ForeignKey
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/DatabaseMetadata.java:[234,25] [nulltest.redundant] redundant test against null; "relMDsByRelId" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/DatabaseMetadata.java:[242,28] [nulltest.redundant] redundant test against null; "fksByParentRelId" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/DatabaseMetadata.java:[250,27] [nulltest.redundant] redundant test against null; "fksByChildRelId" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/DatabaseMetadata.java:[327,40] [nulltest.redundant] redundant test against null; "defaultSchema" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/DatabaseMetadata.java:[327,48] [argument] incompatible argument for parameter schema of RelId.
+  found   : @Initialized @Nullable String
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/ForeignKey.java:[41,28] [assignment] incompatible types in assignment.
+  found   : null (NullType)
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/TableFieldExpr.java:[25,11] [initialization.fields.uninitialized] the constructor does not initialize fields: field, expression, withTableAliasAs, jsonProperty, fieldTypeInGeneratedSource
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/TableFieldExpr.java:[42,18] [nulltest.redundant] redundant test against null; "field" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/TableFieldExpr.java:[42,42] [nulltest.redundant] redundant test against null; "expression" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/TableFieldExpr.java:[44,28] [nulltest.redundant] redundant test against null; "withTableAliasAs" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/TableFieldExpr.java:[44,50] [nulltest.redundant] redundant test against null; "expression" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/TableFieldExpr.java:[69,53] [argument] incompatible argument for parameter expression of TableFieldExpr.
+  found   : null (NullType)
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/TableFieldExpr.java:[69,59] [argument] incompatible argument for parameter withTableAliasAs of TableFieldExpr.
+  found   : null (NullType)
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/TableFieldExpr.java:[69,65] [argument] incompatible argument for parameter jsonProperty of TableFieldExpr.
+  found   : null (NullType)
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/TableFieldExpr.java:[69,71] [argument] incompatible argument for parameter fieldTypeInGeneratedSource of TableFieldExpr.
+  found   : null (NullType)
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/TableFieldExpr.java:[77,35] [argument] incompatible argument for parameter field of TableFieldExpr.
+  found   : @Initialized @Nullable String
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/TableFieldExpr.java:[77,42] [argument] incompatible argument for parameter expression of TableFieldExpr.
+  found   : @Initialized @Nullable String
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/TableFieldExpr.java:[77,48] [argument] incompatible argument for parameter withTableAliasAs of TableFieldExpr.
+  found   : @Initialized @Nullable String
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/TableFieldExpr.java:[77,66] [argument] incompatible argument for parameter jsonProperty of TableFieldExpr.
+  found   : @Initialized @Nullable String
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/TableFieldExpr.java:[77,80] [argument] incompatible argument for parameter fieldTypeInGeneratedSource of TableFieldExpr.
+  found   : @Initialized @Nullable String
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/util/IO.java:[12,28] [nulltest.redundant] redundant test against null; "outputFilePath" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/util/StringFuns.java:[140,17] [nulltest.redundant] redundant test against null; "pat" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/util/StringFuns.java:[145,44] [dereference.of.nullable] dereference of possibly-null reference filePath.getFileName()
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/source_code_writers/JavaWriter.java:[87,25] [nulltest.redundant] redundant test against null; "outputPath" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/source_code_writers/JavaWriter.java:[112,23] [nulltest.redundant] redundant test against null; "filesHeader" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/source_code_writers/JavaWriter.java:[320,20] [nulltest.redundant] redundant test against null; "typeDecl" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/result_types/ResultType.java:[116,32] [override.param] Incompatible parameter type for o.
+  found   : @Initialized @NonNull Object
+  required: @Initialized @Nullable Object
+  Consequence: method in @Initialized @NonNull ResultType
+    @Initialized @NonNull boolean equals(@Initialized @NonNull ResultType this, @Initialized @NonNull Object p0)
+  cannot override method in @Initialized @NonNull Object
+    @Initialized @NonNull boolean equals(@Initialized @NonNull Object this, @Initialized @Nullable Object p0)
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/result_types/ResultType.java:[119,12] [nulltest.redundant] redundant test against null; "o" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/result_types/TableExpressionProperty.java:[33,32] [override.param] Incompatible parameter type for o.
+  found   : @Initialized @NonNull Object
+  required: @Initialized @Nullable Object
+  Consequence: method in @Initialized @NonNull TableExpressionProperty
+    @Initialized @NonNull boolean equals(@Initialized @NonNull TableExpressionProperty this, @Initialized @NonNull Object p0)
+  cannot override method in @Initialized @NonNull Object
+    @Initialized @NonNull boolean equals(@Initialized @NonNull Object this, @Initialized @Nullable Object p0)
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/result_types/TableExpressionProperty.java:[36,12] [nulltest.redundant] redundant test against null; "o" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/result_types/SimpleTableFieldProperty.java:[72,20] [nulltest.redundant] redundant test against null; "nullable" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/result_types/SimpleTableFieldProperty.java:[81,32] [override.param] Incompatible parameter type for o.
+  found   : @Initialized @NonNull Object
+  required: @Initialized @Nullable Object
+  Consequence: method in @Initialized @NonNull SimpleTableFieldProperty
+    @Initialized @NonNull boolean equals(@Initialized @NonNull SimpleTableFieldProperty this, @Initialized @NonNull Object p0)
+  cannot override method in @Initialized @NonNull Object
+    @Initialized @NonNull boolean equals(@Initialized @NonNull Object this, @Initialized @Nullable Object p0)
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/result_types/SimpleTableFieldProperty.java:[84,12] [nulltest.redundant] redundant test against null; "o" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/result_types/ParentReferenceProperty.java:[39,32] [override.param] Incompatible parameter type for o.
+  found   : @Initialized @NonNull Object
+  required: @Initialized @Nullable Object
+  Consequence: method in @Initialized @NonNull ParentReferenceProperty
+    @Initialized @NonNull boolean equals(@Initialized @NonNull ParentReferenceProperty this, @Initialized @NonNull Object p0)
+  cannot override method in @Initialized @NonNull Object
+    @Initialized @NonNull boolean equals(@Initialized @NonNull Object this, @Initialized @Nullable Object p0)
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/result_types/ParentReferenceProperty.java:[42,12] [nulltest.redundant] redundant test against null; "o" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/result_types/ChildCollectionProperty.java:[39,32] [override.param] Incompatible parameter type for o.
+  found   : @Initialized @NonNull Object
+  required: @Initialized @Nullable Object
+  Consequence: method in @Initialized @NonNull ChildCollectionProperty
+    @Initialized @NonNull boolean equals(@Initialized @NonNull ChildCollectionProperty this, @Initialized @NonNull Object p0)
+  cannot override method in @Initialized @NonNull Object
+    @Initialized @NonNull boolean equals(@Initialized @NonNull Object this, @Initialized @Nullable Object p0)
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/result_types/ChildCollectionProperty.java:[42,12] [nulltest.redundant] redundant test against null; "o" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/ChildCollectionSpec.java:[26,30] [assignment] incompatible types in assignment.
+  found   : null (NullType)
+  required: @Initialized @NonNull List<@Initialized @NonNull String>
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/ChildCollectionSpec.java:[27,33] [assignment] incompatible types in assignment.
+  found   : null (NullType)
+  required: @Initialized @NonNull CustomJoinCondition
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/ChildCollectionSpec.java:[28,20] [assignment] incompatible types in assignment.
+  found   : null (NullType)
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/ChildCollectionSpec.java:[30,21] [assignment] incompatible types in assignment.
+  found   : null (NullType)
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/ChildCollectionSpec.java:[46,33] [assignment] incompatible types in assignment.
+  found   : null (NullType)
+  required: @Initialized @NonNull CustomJoinCondition
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/ChildCollectionSpec.java:[64,30] [assignment] incompatible types in assignment.
+  found   : null (NullType)
+  required: @Initialized @NonNull List<@Initialized @NonNull String>
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/TableJsonSpec.java:[24,45] [assignment] incompatible types in assignment.
+  found   : null (NullType)
+  required: @Initialized @NonNull RecordCondition
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/TableJsonSpec.java:[28,15] [argument] incompatible argument for parameter fieldExpressions of TableJsonSpec.
+  found   : null (NullType)
+  required: @Initialized @NonNull List<@Initialized @NonNull TableFieldExpr>
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/TableJsonSpec.java:[28,21] [argument] incompatible argument for parameter parentTables of TableJsonSpec.
+  found   : null (NullType)
+  required: @Initialized @NonNull List<@Initialized @NonNull ParentSpec>
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/TableJsonSpec.java:[28,27] [argument] incompatible argument for parameter childTableCollections of TableJsonSpec.
+  found   : null (NullType)
+  required: @Initialized @NonNull List<@Initialized @NonNull ChildCollectionSpec>
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/TableJsonSpec.java:[28,33] [argument] incompatible argument for parameter recordCondition of TableJsonSpec.
+  found   : null (NullType)
+  required: @Initialized @NonNull RecordCondition
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/TableJsonSpec.java:[43,47] [nulltest.redundant] redundant test against null; "fieldExpressions" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/TableJsonSpec.java:[43,55] [assignment] incompatible types in assignment.
+  found   : @Initialized @Nullable List<@Initialized @NonNull TableFieldExpr>
+  required: @Initialized @NonNull List<@Initialized @NonNull TableFieldExpr>
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/TableJsonSpec.java:[44,39] [nulltest.redundant] redundant test against null; "parentTables" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/TableJsonSpec.java:[44,47] [assignment] incompatible types in assignment.
+  found   : @Initialized @Nullable List<@Initialized @NonNull ParentSpec>
+  required: @Initialized @NonNull List<@Initialized @NonNull ParentSpec>
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/TableJsonSpec.java:[45,57] [nulltest.redundant] redundant test against null; "childTableCollections" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/TableJsonSpec.java:[45,65] [assignment] incompatible types in assignment.
+  found   : @Initialized @Nullable List<@Initialized @NonNull ChildCollectionSpec>
+  required: @Initialized @NonNull List<@Initialized @NonNull ChildCollectionSpec>
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/TableJsonSpec.java:[67,30] [nulltest.redundant] redundant test against null; "fieldExpressions" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/TableJsonSpec.java:[72,26] [nulltest.redundant] redundant test against null; "parentTables" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/TableJsonSpec.java:[77,26] [nulltest.redundant] redundant test against null; "parentTables" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/TableJsonSpec.java:[78,64] [nulltest.redundant] redundant test against null; "t.getReferenceName()" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/TableJsonSpec.java:[84,26] [nulltest.redundant] redundant test against null; "parentTables" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/TableJsonSpec.java:[85,64] [nulltest.redundant] redundant test against null; "t.getReferenceName()" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/TableJsonSpec.java:[91,35] [nulltest.redundant] redundant test against null; "childTableCollections" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/TableJsonSpec.java:[96,29] [nulltest.redundant] redundant test against null; "recordCondition" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/TableJsonSpec.java:[102,28] [nulltest.redundant] redundant test against null; "fieldExpressions" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/TableJsonSpec.java:[103,33] [nulltest.redundant] redundant test against null; "childTableCollections" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/ParentSpec.java:[23,32] [argument] incompatible argument for parameter referenceName of ParentSpec.
+  found   : null (NullType)
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/ParentSpec.java:[23,38] [argument] incompatible argument for parameter viaForeignKeyFields of ParentSpec.
+  found   : null (NullType)
+  required: @Initialized @NonNull List<@Initialized @NonNull String>
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/ParentSpec.java:[23,44] [argument] incompatible argument for parameter customJoinCondition of ParentSpec.
+  found   : null (NullType)
+  required: @Initialized @NonNull CustomJoinCondition
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/ParentSpec.java:[33,58] [argument] incompatible argument for parameter customJoinCondition of ParentSpec.
+  found   : null (NullType)
+  required: @Initialized @NonNull CustomJoinCondition
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/RecordCondition.java:[17,24] [assignment] incompatible types in assignment.
+  found   : null (NullType)
+  required: @Initialized @NonNull List<@Initialized @NonNull String>
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/RecordCondition.java:[18,30] [assignment] incompatible types in assignment.
+  found   : null (NullType)
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/QueryGeneratorMain.java:[221,15] [argument] incompatible argument for parameter filesHeader of JavaWriter.
+  found   : @Initialized @Nullable String
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/QueryGeneratorMain.java:[229,15] [argument] incompatible argument for parameter filesHeader of TypeScriptWriter.
+  found   : @Initialized @Nullable String
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/QueryGeneratorMain.java:[285,19] [nulltest.redundant] redundant test against null; "recCond" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/QueryGeneratorMain.java:[285,54] [nulltest.redundant] redundant test against null; "recCond.getParamNames()" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/QueryGroupSpec.java:[15,34] [assignment] incompatible types in assignment.
+  found   : null (NullType)
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/QuerySpec.java:[34,33] [assignment] incompatible types in assignment.
+  found   : null (NullType)
+  required: @Initialized @NonNull PropertyNameDefault
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/QuerySpec.java:[35,21] [assignment] incompatible types in assignment.
+  found   : null (NullType)
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/QuerySpec.java:[37,29] [assignment] incompatible types in assignment.
+  found   : null (NullType)
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/QuerySpec.java:[54,57] [nulltest.redundant] redundant test against null; "resultRepresentations" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/QuerySpec.java:[78,35] [nulltest.redundant] redundant test against null; "resultRepresentations" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/QuerySpec.java:[85,33] [nulltest.redundant] redundant test against null; "generateResultTypes" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/QuerySpec.java:[92,28] [nulltest.redundant] redundant test against null; "generateSource" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/QuerySpec.java:[105,23] [nulltest.redundant] redundant test against null; "forUpdate" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/DatabaseMetadataFetcher.java:[42,30] [nulltest.redundant] redundant test against null; "schema" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/DatabaseMetadataFetcher.java:[44,65] [argument] incompatible argument for parameter schema of fetchRelationDescriptions.
+  found   : @Initialized @Nullable String
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/DatabaseMetadataFetcher.java:[100,53] [argument] incompatible argument for parameter obj of requireNonNull.
+  found   : @Initialized @Nullable String
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/DatabaseMetadataFetcher.java:[102,33] [argument] incompatible argument for parameter schema of RelId.
+  found   : @Initialized @Nullable String
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/DatabaseMetadataFetcher.java:[106,57] [argument] incompatible argument for parameter obj of requireNonNull.
+  found   : @Initialized @Nullable String
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/DatabaseMetadataFetcher.java:[108,67] [argument] incompatible argument for parameter relComment of RelDescr.
+  found   : @Initialized @Nullable String
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/DatabaseMetadataFetcher.java:[144,60] [argument] incompatible argument for parameter obj of requireNonNull.
+  found   : @Initialized @Nullable String
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/DatabaseMetadataFetcher.java:[146,36] [argument] incompatible argument for parameter schema of RelId.
+  found   : @Initialized @Nullable String
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/DatabaseMetadataFetcher.java:[212,18] [argument] incompatible argument for parameter constraintName of ForeignKeyBuilder.
+  found   : null (NullType)
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/DatabaseMetadataFetcher.java:[213,40] [argument] incompatible argument for parameter schema of RelId.
+  found   : @Initialized @Nullable String
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/DatabaseMetadataFetcher.java:[214,48] [argument] incompatible argument for parameter obj of requireNonNull.
+  found   : @Initialized @Nullable String
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/DatabaseMetadataFetcher.java:[215,40] [argument] incompatible argument for parameter schema of RelId.
+  found   : @Initialized @Nullable String
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/DatabaseMetadataFetcher.java:[216,48] [argument] incompatible argument for parameter obj of requireNonNull.
+  found   : @Initialized @Nullable String
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/DatabaseMetadataFetcher.java:[220,27] [argument] incompatible argument for parameter obj of requireNonNull.
+  found   : @Initialized @Nullable ForeignKeyBuilder
+  required: @Initialized @NonNull ForeignKeyBuilder
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/DatabaseMetadataFetcher.java:[222,45] [argument] incompatible argument for parameter obj of requireNonNull.
+  found   : @Initialized @Nullable String
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/DatabaseMetadataFetcher.java:[223,45] [argument] incompatible argument for parameter obj of requireNonNull.
+  found   : @Initialized @Nullable String
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/DatabaseMetadataFetcher.java:[271,26] [return] incompatible types in return.
+  type of expression: @Initialized @Nullable Integer
+  method return type: @Initialized @NonNull Integer
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/DatabaseMetadataFetcher.java:[282,122] [argument] incompatible argument for parameter obj of requireNonNull.
+  found   : @Initialized @Nullable String
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/DatabaseMetadataFetcher.java:[287,61] [argument] incompatible argument for parameter obj of requireNonNull.
+  found   : @Initialized @Nullable String
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/DatabaseMetadataFetcher.java:[290,54] [argument] incompatible argument for parameter obj of requireNonNull.
+  found   : @Initialized @Nullable String
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/DatabaseMetadataFetcher.java:[292,56] [argument] incompatible argument for parameter obj of requireNonNull.
+  found   : @Initialized @Nullable String
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/DatabaseMetadataFetcher.java:[305,25] [nulltest.redundant] redundant test against null; "nullableCode" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/DatabaseMetadataFetcher.java:[306,27] [nulltest.redundant] redundant test against null; "nullableCode" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/DatabaseMetadataFetcher.java:[313,50] [argument] incompatible argument for parameter length of Field.
+  found   : @Initialized @Nullable Integer
+  required: @Initialized @NonNull Integer
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/DatabaseMetadataFetcher.java:[313,58] [argument] incompatible argument for parameter precision of Field.
+  found   : @Initialized @Nullable Integer
+  required: @Initialized @NonNull Integer
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/DatabaseMetadataFetcher.java:[313,64] [argument] incompatible argument for parameter precisionRadix of Field.
+  found   : @FBCBottom @Nullable Integer
+  required: @Initialized @NonNull Integer
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/DatabaseMetadataFetcher.java:[313,75] [argument] incompatible argument for parameter fractionalDigits of Field.
+  found   : @Initialized @Nullable Integer
+  required: @Initialized @NonNull Integer
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/DatabaseMetadataFetcher.java:[313,85] [argument] incompatible argument for parameter nullable of Field.
+  found   : @Initialized @Nullable Boolean
+  required: @Initialized @NonNull Boolean
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/DatabaseMetadataFetcher.java:[313,95] [argument] incompatible argument for parameter primaryKeyPartNumber of Field.
+  found   : @Initialized @Nullable Integer
+  required: @Initialized @NonNull Integer
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/source_code_writers/TypeScriptWriter.java:[68,25] [nulltest.redundant] redundant test against null; "outputPath" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/source_code_writers/TypeScriptWriter.java:[95,23] [nulltest.redundant] redundant test against null; "filesHeader" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/source_code_writers/TypeScriptWriter.java:[217,24] [nulltest.redundant] redundant test against null; "typeOverride" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/sql_dialects/OracleDialect.java:[50,21] [nulltest.redundant] redundant test against null; "orderBy" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/sql_dialects/OracleDialect.java:[66,21] [nulltest.redundant] redundant test against null; "orderBy" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/util/Props.java:[21,32] [return] incompatible types in return.
+  type of expression: @Initialized @Nullable String
+  method return type: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/util/Props.java:[23,13] [return] incompatible types in return.
+  type of expression: null (NullType)
+  method return type: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/DatabaseMetadataGeneratorMain.java:[93,22] [argument] incompatible argument for parameter t of ifPresent.
+  found   : @Initialized @Nullable String
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/DatabaseMetadataGeneratorMain.java:[104,30] [nulltest.redundant] redundant test against null; "dateMappingStr" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/DatabaseMetadataGeneratorMain.java:[118,18] [argument] incompatible argument for parameter schema of fetchMetadata.
+  found   : @Initialized @Nullable String
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/DatabaseMetadataGeneratorMain.java:[127,19] [switching.nullable] switching on a possibly-null value (outputFormat)
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/source_writers/JavaWriter.java:[48,28] [nulltest.redundant] redundant test against null; "packageOutputDir" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/source_writers/JavaWriter.java:[67,25] [nulltest.redundant] redundant test against null; "outputPath" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/source_writers/JavaWriter.java:[127,28] [nulltest.redundant] redundant test against null; "pkPartNum" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/source_writers/JavaWriter.java:[190,29] [nulltest.redundant] redundant test against null; "outputFilePath" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/sql_dialects/PostgresDialect.java:[50,21] [nulltest.redundant] redundant test against null; "orderBy" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/sql_dialects/PostgresDialect.java:[65,21] [nulltest.redundant] redundant test against null; "orderBy" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/RelationMetadataSourceGeneratorMain.java:[78,19] [argument] incompatible argument for parameter t of ifPresent.
+  found   : @Initialized @Nullable Path
+  required: @Initialized @NonNull Path
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/RelationMetadataSourceGeneratorMain.java:[82,64] [argument] incompatible argument for parameter srcOutputBaseDir of getSourceCodeWriter.
+  found   : @Initialized @Nullable Path
+  required: @Initialized @NonNull Path
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/result_types/ResultTypesGenerator.java:[94,36] [nulltest.redundant] redundant test against null; "existingIdenticalType" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/result_types/ResultTypesGenerator.java:[118,29] [nulltest.redundant] redundant test against null; "tfe.getField()" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/result_types/ResultTypesGenerator.java:[120,61] [argument] incompatible argument for parameter obj of requireNonNull.
+  found   : @Initialized @Nullable Field
+  required: @Initialized @NonNull Field
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/result_types/ResultTypesGenerator.java:[139,34] [nulltest.redundant] redundant test against null; "tfe.getExpression()" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/result_types/ResultTypesGenerator.java:[285,13] [return] incompatible types in return.
+  type of expression: null (NullType)
+  method return type: @Initialized @NonNull ResultType
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/result_types/ResultTypesGenerator.java:[304,23] [dereference.of.nullable] dereference of possibly-null reference fkField
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/QuerySpecValidations.java:[30,17] [nulltest.redundant] redundant test against null; "relMd" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/QuerySpecValidations.java:[47,43] [nulltest.redundant] redundant test against null; "tableSpec.getFieldExpressions()" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/QuerySpecValidations.java:[59,19] [nulltest.redundant] redundant test against null; "expr" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/QuerySpecValidations.java:[59,72] [nulltest.redundant] redundant test against null; "fieldExpr.getFieldTypeInGeneratedSource()" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/QuerySpecValidations.java:[65,21] [nulltest.redundant] redundant test against null; "field" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/QuerySpecValidations.java:[65,39] [nulltest.redundant] redundant test against null; "expr" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/QuerySpecValidations.java:[71,21] [nulltest.redundant] redundant test against null; "field" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/QuerySpecValidations.java:[76,17] [nulltest.redundant] redundant test against null; "relMd" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/QuerySpecValidations.java:[95,20] [nulltest.redundant] redundant test against null; "parentMd" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/query_specs/QuerySpecValidations.java:[97,19] [nulltest.redundant] redundant test against null; "childMd" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/QuerySqlGenerator.java:[97,42] [argument] incompatible argument for parameter parentChildCond of jsonObjectRowsSql.
+  found   : null (NullType)
+  required: @Initialized @NonNull ParentChildCondition
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/QuerySqlGenerator.java:[99,40] [argument] incompatible argument for parameter parentChildCond of jsonArrayRowSql.
+  found   : null (NullType)
+  required: @Initialized @NonNull ParentChildCondition
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/QuerySqlGenerator.java:[101,34] [argument] incompatible argument for parameter parentChildCond of baseQuery.
+  found   : null (NullType)
+  required: @Initialized @NonNull ParentChildCondition
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/QuerySqlGenerator.java:[174,19] [nulltest.redundant] redundant test against null; "orderBy" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/QuerySqlGenerator.java:[209,23] [nulltest.redundant] redundant test against null; "fieldExprs" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/QuerySqlGenerator.java:[233,37] [nulltest.redundant] redundant test against null; "tableFieldExpr.getField()" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/QuerySqlGenerator.java:[238,45] [nulltest.redundant] redundant test against null; "tableFieldExpr.getExpression()" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/QuerySqlGenerator.java:[255,73] [argument] incompatible argument for parameter orderBy of SqlParts.
+  found   : null (NullType)
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/QuerySqlGenerator.java:[282,49] [nulltest.redundant] redundant test against null; "inlineParentSpec.getReferenceName()" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/QuerySqlGenerator.java:[287,53] [argument] incompatible argument for parameter parentChildCond of baseQuery.
+  found   : null (NullType)
+  required: @Initialized @NonNull ParentChildCondition
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/QuerySqlGenerator.java:[287,65] [argument] incompatible argument for parameter orderBy of baseQuery.
+  found   : null (NullType)
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/QuerySqlGenerator.java:[299,12] [argument] incompatible argument for parameter comment of SelectEntry.
+  found   : @Initialized @Nullable String
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/QuerySqlGenerator.java:[327,26] [nulltest.redundant] redundant test against null; "customJoinCond" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/QuerySqlGenerator.java:[329,55] [nulltest.redundant] redundant test against null; "parentSpec.getChildForeignKeyFieldsSet()" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/QuerySqlGenerator.java:[403,77] [argument] incompatible argument for parameter orderBy of jsonObjectRowsSql.
+  found   : null (NullType)
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/QuerySqlGenerator.java:[408,9] [argument] incompatible argument for parameter comment of SelectEntry.
+  found   : null (NullType)
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/QuerySqlGenerator.java:[411,67] [argument] incompatible argument for parameter orderBy of SqlParts.
+  found   : null (NullType)
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/QuerySqlGenerator.java:[425,22] [nulltest.redundant] redundant test against null; "childSpecs" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/QuerySqlGenerator.java:[478,26] [nulltest.redundant] redundant test against null; "customJoinCond" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/QuerySqlGenerator.java:[480,56] [nulltest.redundant] redundant test against null; "childCollectionSpec.getForeignKeyFields()" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/QuerySqlGenerator.java:[528,73] [argument] incompatible argument for parameter orderBy of baseQuery.
+  found   : null (NullType)
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/QuerySqlGenerator.java:[563,70] [argument] incompatible argument for parameter orderBy of baseQuery.
+  found   : null (NullType)
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/QuerySqlGenerator.java:[575,18] [nulltest.redundant] redundant test against null; "orderBy" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/QuerySqlGenerator.java:[585,16] [nulltest.redundant] redundant test against null; "cond" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/QuerySqlGenerator.java:[591,16] [return] incompatible types in return.
+  type of expression: null (NullType)
+  method return type: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/QuerySqlGenerator.java:[604,14] [nulltest.redundant] redundant test against null; "fk" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/QuerySqlGenerator.java:[608,30] [nulltest.redundant] redundant test against null; "foreignKeyFields" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/QuerySqlGenerator.java:[622,26] [nulltest.redundant] redundant test against null; "tfe.getField()" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/QuerySqlGenerator.java:[626,34] [nulltest.redundant] redundant test against null; "tfe.getExpression()" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/QuerySqlGenerator.java:[639,18] [nulltest.redundant] redundant test against null; "schema" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/QuerySqlGenerator.java:[809,115] [argument] incompatible argument for parameter comment of SelectEntry.
+  found   : null (NullType)
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/QuerySqlGenerator.java:[846,24] [assignment] incompatible types in assignment.
+  found   : null (NullType)
+  required: @Initialized @NonNull String
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/QuerySqlGenerator.java:[901,21] [nulltest.redundant] redundant test against null; "orderBy" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/QuerySqlGenerator.java:[910,21] [nulltest.redundant] redundant test against null; "comment" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/source_writers/TypeScriptWriter.java:[68,25] [nulltest.redundant] redundant test against null; "outputPath" is non-null
+[WARNING] /home/dan/Documents/CFResearch/experiments-live/dagen-wpi/src/main/java/org/sqljson/dbmd/source_writers/TypeScriptWriter.java:[121,28] [nulltest.redundant] redundant test against null; "pkPartNum" is non-null
